@@ -7,6 +7,7 @@ struct HomeView: View {
     @Query private var heroes: [HeroProfile]
     @Query private var records: [AdventureRecord]
     @Query private var categories: [AdventureCategory]
+    @State private var selectedDay: HeatmapView.DayCell?
 
     var body: some View {
         NavigationStack {
@@ -20,6 +21,8 @@ struct HomeView: View {
                 .tint(Selge.Palette.accent)
                 .scrollContentBackground(.hidden)
                 .background(Selge.Palette.bg)
+                // 点击热力图以外的区域时收起悬浮框（热力图自身的拖动优先响应，不触发本手势）
+                .gesture(TapGesture().onEnded { selectedDay = nil })
                 .selgeScreenHeader()
             }
         }
@@ -99,7 +102,7 @@ struct HomeView: View {
     private func heatmapSection(width: CGFloat) -> some View {
         Section {
             VStack(spacing: 10) {
-                HeatmapView(records: records)
+                HeatmapView(records: records, selected: $selectedDay)
                     .frame(height: HeatmapView.intrinsicHeight(containerWidth: width))
                 heatmapLegend
             }

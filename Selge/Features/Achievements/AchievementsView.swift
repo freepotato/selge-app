@@ -128,13 +128,13 @@ private struct AchievementRow: View {
     private var swingGesture: some Gesture {
         DragGesture(minimumDistance: 1)
             .onChanged { value in
-                // 限制最大 ±72°，保证永不翻转至背面
-                let target = Double(value.translation.width) * 0.55
-                swingAngle = min(max(target, -72), 72)
+                // 限制最大 ±45°，转动幅度更克制
+                let target = Double(value.translation.width) * 0.5
+                swingAngle = min(max(target, -45), 45)
             }
             .onEnded { _ in
-                // 松手后钟摆式回弹（低阻尼弹簧，节奏放缓保留惯性摆动）
-                withAnimation(.spring(response: 0.95, dampingFraction: 0.32, blendDuration: 0.35)) {
+                // 松手后钟摆式回弹：阻尼更大、节奏更慢，整体手感更沉
+                withAnimation(.spring(response: 1.15, dampingFraction: 0.72, blendDuration: 0.45)) {
                     swingAngle = 0
                 }
             }

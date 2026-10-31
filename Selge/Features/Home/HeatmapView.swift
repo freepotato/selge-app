@@ -5,6 +5,8 @@ import SwiftUI
 /// 按住任意方块（可拖动）显示该天的历险次数。
 struct HeatmapView: View {
     let records: [AdventureRecord]
+    /// 当前选中的日期（悬浮框会一直停留，直到点击其他区域清空）
+    @Binding var selected: DayCell?
 
     private static let calendar = Calendar.current
     static let weekColumnCount = 22
@@ -19,8 +21,6 @@ struct HeatmapView: View {
         return monthLabelHeight + cell * 7 + gap * 6
     }
 
-    @State private var touched: DayCell?
-
     var body: some View {
         GeometryReader { proxy in
             let grid = Self.buildGrid(records: records)
@@ -31,22 +31,24 @@ struct HeatmapView: View {
                 weekdayLabels(metrics: metrics)
                 cells(grid: grid, metrics: metrics)
 
-                if let touched, let point = tooltipOffset(for: touched, grid: grid, metrics: metrics, size: proxy.size) {
-                    tooltip(for: touched)
+                if let selected, let point = tooltipOffset(for: selected, grid: grid, metrics: metrics, size: proxy.size) {
+                    tooltip(for: selected)
                         .offset(x: point.x, y: point.y)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .contentShape(Rectangle())
-            .gesture(
+            // 高优先级手势：保证按住/滑动方块时不会被外层列表的点击手势清空悬浮框
+            .highPriorityGesture(
                 DragGesture(minimumDistance: 0, coordinateSpace: .local)
                     .onChanged { value in
-                        let hit = cell(at: value.location, grid: grid, metrics: metrics)
-                        if hit != touched { touched = hit }
+                        // 手指滑出网格时保留上一个日期，避免提示频繁闪烁
+                        if let hit = cell(at: value.location, grid: grid, metrics: metrics), hit != selected {
+                            selected = hit
+                        }
                     }
-                    .onEnded { _ in touched = nil }
             )
-            .animation(.easeOut(duration: 0.12), value: touched)
+            .animation(.easeOut(duration: 0.12), value: selected)
         }
     }
 
@@ -60,7 +62,7 @@ struct HeatmapView: View {
                     .fill(day.fill)
                     .frame(width: metrics.cell, height: metrics.cell)
                     .overlay {
-                        if touched?.key == day.key {
+                        if selected?.key == day.key {
                             RoundedRectangle(cornerRadius: metrics.cell * 0.22, style: .continuous)
                                 .strokeBorder(Selge.Palette.textPrimary.opacity(0.8), lineWidth: 1.5)
                         }

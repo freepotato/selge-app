@@ -168,7 +168,7 @@ final class GameStore {
         context.insert(transaction)
 
         // 4. 成就检测
-        let newAchievements = checkAchievements(at: endedAt)
+        let newAchievements = syncAchievements(at: endedAt)
 
         try? context.save()
 
@@ -238,7 +238,7 @@ final class GameStore {
         try? context.save()
     }
 
-    /// 删除历险记录：撤销该记录带来的经验/金币，并删除关联流水
+    /// 删除历险记录：撤销该记录带来的经验/金币，删除关联流水，并重新校准成就
     func deleteRecord(_ record: AdventureRecord) {
         if let hero = hero() {
             hero.xp = max(0, hero.xp - record.xp)
@@ -249,6 +249,9 @@ final class GameStore {
             context.delete(transaction)
         }
         context.delete(record)
+        // 记录减少后，已不满足门槛的成就需要撤销（如首次散步）
+        try? context.save()
+        syncAchievements()
         try? context.save()
     }
 
@@ -265,17 +268,32 @@ final class GameStore {
 
     // MARK: - 成就
 
-    /// 检测并写入新解锁的成就，返回本次新解锁列表
+    /// 按当前历险记录校准成就状态：未达成但已解锁的撤销，新达成的写入。
+    /// 返回本次新解锁列表。
+    /// 例：只有一条散步记录时「踏出第一步」已解锁，删除该记录后会自动撤销。
     @discardableResult
-    func checkAchievements(at date: Date = Date.now) -> [AchievementDef] {
+    func syncAchievements(at date: Date = Date.now) -> [AchievementDef] {
         let records = (try? context.fetch(FetchDescriptor<AdventureRecord>())) ?? []
         let categories = categories()
         let counts = groupCounts(records: records, categories: categories)
-        let unlockedIds = Set(unlockedAchievementIds())
+        let unlocks = (try? context.fetch(FetchDescriptor<AchievementUnlock>())) ?? []
+        var unlockedIds = Set(unlocks.map(\.achievementId))
         var newly: [AchievementDef] = []
 
-        for def in AchievementCatalog.all {
-            guard !unlockedIds.contains(def.id) else { continue }
+        // 1. 撤销已不再达成的成就
+        for unlock in unlocks {
+            guard let def = AchievementCatalog.all.first(where: { $0.id == unlock.achievementId }) else {
+                context.delete(unlock)
+                continue
+            }
+            if (counts[def.group] ?? 0) < def.requirement {
+                context.delete(unlock)
+                unlockedIds.remove(def.id)
+            }
+        }
+
+        // 2. 写入新达成的成就
+        for def in AchievementCatalog.all where !unlockedIds.contains(def.id) {
             let count = counts[def.group] ?? 0
             if count >= def.requirement {
                 let unlock = AchievementUnlock()
