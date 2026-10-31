@@ -38,6 +38,14 @@ selge-app/
    - 真机需登录 iCloud 账户；无账户时 App 自动降级为本地存储。
 4. **能力文件**：`Selge/Entitlements/Selge.entitlements` 已声明 `com.apple.developer.icloud-services = [CloudKit]` 与容器标识，Xcode 会在签名时合并。
 
+> **个人免费团队（未加入付费开发者计划）**：不支持 iCloud 能力，真机安装会报
+> "Personal development teams do not support the iCloud capability"。
+> 临时方案：将 `Selge/Entitlements/Selge.entitlements` 内容替换为空 `<dict/>`（本地修改即可，
+> 无需提交），删除后 Xcode 即可自动签名安装，App 以纯本地模式运行
+> （代码层已有安全门：无 iCloud 能力时自动跳过 CloudKit）。免费签名 7 天过期需重新 Run，
+> 且同一 Apple ID 最多同时安装 3 个免费签名的 App。需要 iCloud 同步请加入
+> Apple Developer Program（99 美元/年）并恢复 entitlements 中的两段 iCloud 声明。
+
 ## TestFlight / App Store Connect 发布流程
 
 1. 递增 `CURRENT_PROJECT_VERSION`（`Config/Version.xcconfig`）。
