@@ -1,0 +1,423 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		02A74EC15EBFE36CB5141772 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1B34D225A944B6647FDAE505 /* OFL.txt */; };
+		1C5FEC338D9403BEE05C7E14 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC351A2640FA71AFC748230E /* RootView.swift */; };
+		1E0A578E94833D0D8557C6D5 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4A4AE1C8B716DC663F316E /* Persistence.swift */; };
+		26742CFBA63B587E5AC5EC0E /* ShopCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC5BBC696FAE9EEF952FBF1 /* ShopCatalog.swift */; };
+		31BE72F4C288870EC1D6041D /* ChangelogParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B03ED788E00D8E6FEC17FA /* ChangelogParser.swift */; };
+		33D6E5A6DEA0BE46878A3EC4 /* HeatmapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE38D72161649F7D7324922 /* HeatmapView.swift */; };
+		3CB99058D574C4E0A700F831 /* VersionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFFCCFE93927238CE100DB5 /* VersionInfo.swift */; };
+		416F77E1FD671A7B10D115D7 /* BackpackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0758E115EF1EFFD77F7DE2C /* BackpackView.swift */; };
+		4D3ACAA06589C34AFCA6678E /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71C285A71DC0404C15D26C1 /* Components.swift */; };
+		4D44B359807F792221E6D9F4 /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 6B9B9EF478FB3BF867FB183A /* CHANGELOG.md */; };
+		5429FED2EC5CBA7A83621F99 /* GameStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AAE60A2A04BDC416AFC808 /* GameStore.swift */; };
+		6415648E239D2113B7AF2227 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F3A1903E1FB44B1960275E2 /* Assets.xcassets */; };
+		72D6213BE2DF2E2D095DBABD /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16208DD987A945E68A9D61AA /* Models.swift */; };
+		73E7E881F167A383801C9098 /* SelgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A31B4F33570071F5D59A67 /* SelgeApp.swift */; };
+		7C997A305B7ECFAE73F2B6C2 /* AdventureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9758118565390D6E89B1B38 /* AdventureView.swift */; };
+		9635C68694E8DFA24B251005 /* GameRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6266C99BA2C7A3D7334BE384 /* GameRules.swift */; };
+		96C0AFC697F536EBEB953F0C /* SelgeSerif-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4A990B625EADC3A290D27E87 /* SelgeSerif-Bold.ttf */; };
+		A0F850C3965C5D6BC10E6E5F /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8BF480582231CCF3CE183 /* AppConfig.swift */; };
+		AE2EBC622ABD6CD32D1F5634 /* ShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F992BDF6F20F07441188AFF /* ShopView.swift */; };
+		B44546CE4ED4CAAE75B9D0EB /* AdventureKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FC70DC422F86AEF3AE8AF1 /* AdventureKind.swift */; };
+		B5566238CA71989DE1FB8DB2 /* SelgeSerif-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93AF395C2A948FAFCBF7A5FB /* SelgeSerif-Regular.ttf */; };
+		BA1904B8F88C093C258B31F7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778FC391B9C064CF4F1F52EB /* HomeView.swift */; };
+		BE07246086B25C6A8DC235E0 /* AchievementCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92DE6EC52F7BD03BAF6B750 /* AchievementCatalog.swift */; };
+		CCDDBA1B77C3C681C009DD47 /* ChangelogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C519DE8C820238759BCCA655 /* ChangelogView.swift */; };
+		D16C599633A772013F4C3179 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D127E477211E677B40BD0F3 /* SettingsView.swift */; };
+		EF68B3B2F34F0D1C4226740C /* SelgeTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F00DBE8FB05F39029461A8 /* SelgeTheme.swift */; };
+		EF94904610FA449DF1426B3A /* AchievementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A576E21B20FC46E25A6D17 /* AchievementsView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		14DA0911D06DCD479A24172A /* Selge.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Selge.entitlements; sourceTree = "<group>"; };
+		16208DD987A945E68A9D61AA /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		1B34D225A944B6647FDAE505 /* OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
+		35B03ED788E00D8E6FEC17FA /* ChangelogParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogParser.swift; sourceTree = "<group>"; };
+		3C4030A5C5E2B285986C1B88 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		3F3A1903E1FB44B1960275E2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		44F00DBE8FB05F39029461A8 /* SelgeTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelgeTheme.swift; sourceTree = "<group>"; };
+		4A990B625EADC3A290D27E87 /* SelgeSerif-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SelgeSerif-Bold.ttf"; sourceTree = "<group>"; };
+		6266C99BA2C7A3D7334BE384 /* GameRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameRules.swift; sourceTree = "<group>"; };
+		6B9B9EF478FB3BF867FB183A /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
+		75E8BF480582231CCF3CE183 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		778FC391B9C064CF4F1F52EB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		7F992BDF6F20F07441188AFF /* ShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopView.swift; sourceTree = "<group>"; };
+		8D127E477211E677B40BD0F3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		925F65CD86AED604E3A28875 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
+		93AF395C2A948FAFCBF7A5FB /* SelgeSerif-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SelgeSerif-Regular.ttf"; sourceTree = "<group>"; };
+		9EE38D72161649F7D7324922 /* HeatmapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapView.swift; sourceTree = "<group>"; };
+		9F059B7FFFC916C02B2CF888 /* Selge.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Selge.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A781F5563038F86BB84CFB40 /* SelgeDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SelgeDebug.entitlements; sourceTree = "<group>"; };
+		AC351A2640FA71AFC748230E /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		AD4A4AE1C8B716DC663F316E /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		B3FC70DC422F86AEF3AE8AF1 /* AdventureKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureKind.swift; sourceTree = "<group>"; };
+		C0758E115EF1EFFD77F7DE2C /* BackpackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackpackView.swift; sourceTree = "<group>"; };
+		C519DE8C820238759BCCA655 /* ChangelogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogView.swift; sourceTree = "<group>"; };
+		C6AAE60A2A04BDC416AFC808 /* GameStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStore.swift; sourceTree = "<group>"; };
+		E1A31B4F33570071F5D59A67 /* SelgeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelgeApp.swift; sourceTree = "<group>"; };
+		E9758118565390D6E89B1B38 /* AdventureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureView.swift; sourceTree = "<group>"; };
+		EAFFCCFE93927238CE100DB5 /* VersionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionInfo.swift; sourceTree = "<group>"; };
+		F1A576E21B20FC46E25A6D17 /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
+		F71C285A71DC0404C15D26C1 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		F92DE6EC52F7BD03BAF6B750 /* AchievementCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementCatalog.swift; sourceTree = "<group>"; };
+		FAC5BBC696FAE9EEF952FBF1 /* ShopCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCatalog.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0AB2DFE089DDE9A3996621C6 = {
+			isa = PBXGroup;
+			children = (
+				23D2B33C9A6A374C28824D35 /* Config */,
+				94262F118B62BA092EE27D3C /* docs */,
+				198691F105FDBC64DAD8E3C6 /* Selge */,
+				8F151137A35D89E2AF7E10E8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1428B27CB5B55FB098EF7220 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B3FC70DC422F86AEF3AE8AF1 /* AdventureKind.swift */,
+				16208DD987A945E68A9D61AA /* Models.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		198691F105FDBC64DAD8E3C6 /* Selge */ = {
+			isa = PBXGroup;
+			children = (
+				3F3A1903E1FB44B1960275E2 /* Assets.xcassets */,
+				3C4030A5C5E2B285986C1B88 /* Info.plist */,
+				AC351A2640FA71AFC748230E /* RootView.swift */,
+				E1A31B4F33570071F5D59A67 /* SelgeApp.swift */,
+				5B7D2F4F4920AFE2299A989A /* Entitlements */,
+				B7904C3EDDDC1E1C4D95CDBB /* Features */,
+				1428B27CB5B55FB098EF7220 /* Models */,
+				6275CC646F04EC03D0DB7B97 /* Resources */,
+				C24C19F9CF3D69BA1C6EF7E6 /* Services */,
+				71E20D4AB33622539F4968D3 /* Theme */,
+			);
+			path = Selge;
+			sourceTree = "<group>";
+		};
+		23D2B33C9A6A374C28824D35 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				925F65CD86AED604E3A28875 /* Version.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		3F6EED4900E304171F59DD1B /* Shop */ = {
+			isa = PBXGroup;
+			children = (
+				C0758E115EF1EFFD77F7DE2C /* BackpackView.swift */,
+				7F992BDF6F20F07441188AFF /* ShopView.swift */,
+			);
+			path = Shop;
+			sourceTree = "<group>";
+		};
+		3FBECC67C87AE1E24113C5CC /* Adventure */ = {
+			isa = PBXGroup;
+			children = (
+				E9758118565390D6E89B1B38 /* AdventureView.swift */,
+			);
+			path = Adventure;
+			sourceTree = "<group>";
+		};
+		549E7CCBD34995A66C4D57C8 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F71C285A71DC0404C15D26C1 /* Components.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		574986BBE8FB1863DE239A9A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				C519DE8C820238759BCCA655 /* ChangelogView.swift */,
+				8D127E477211E677B40BD0F3 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		5B7D2F4F4920AFE2299A989A /* Entitlements */ = {
+			isa = PBXGroup;
+			children = (
+				14DA0911D06DCD479A24172A /* Selge.entitlements */,
+				A781F5563038F86BB84CFB40 /* SelgeDebug.entitlements */,
+			);
+			path = Entitlements;
+			sourceTree = "<group>";
+		};
+		6138F84FD9690750F929B7A0 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				9EE38D72161649F7D7324922 /* HeatmapView.swift */,
+				778FC391B9C064CF4F1F52EB /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		6275CC646F04EC03D0DB7B97 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1B34D225A944B6647FDAE505 /* OFL.txt */,
+				4A990B625EADC3A290D27E87 /* SelgeSerif-Bold.ttf */,
+				93AF395C2A948FAFCBF7A5FB /* SelgeSerif-Regular.ttf */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		71E20D4AB33622539F4968D3 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				44F00DBE8FB05F39029461A8 /* SelgeTheme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		8F151137A35D89E2AF7E10E8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9F059B7FFFC916C02B2CF888 /* Selge.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		94262F118B62BA092EE27D3C /* docs */ = {
+			isa = PBXGroup;
+			children = (
+				6B9B9EF478FB3BF867FB183A /* CHANGELOG.md */,
+			);
+			path = docs;
+			sourceTree = "<group>";
+		};
+		94519FA4D8B114EAEA87BF85 /* Achievements */ = {
+			isa = PBXGroup;
+			children = (
+				F1A576E21B20FC46E25A6D17 /* AchievementsView.swift */,
+			);
+			path = Achievements;
+			sourceTree = "<group>";
+		};
+		B7904C3EDDDC1E1C4D95CDBB /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				94519FA4D8B114EAEA87BF85 /* Achievements */,
+				3FBECC67C87AE1E24113C5CC /* Adventure */,
+				549E7CCBD34995A66C4D57C8 /* Components */,
+				6138F84FD9690750F929B7A0 /* Home */,
+				574986BBE8FB1863DE239A9A /* Settings */,
+				3F6EED4900E304171F59DD1B /* Shop */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		C24C19F9CF3D69BA1C6EF7E6 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				F92DE6EC52F7BD03BAF6B750 /* AchievementCatalog.swift */,
+				75E8BF480582231CCF3CE183 /* AppConfig.swift */,
+				35B03ED788E00D8E6FEC17FA /* ChangelogParser.swift */,
+				6266C99BA2C7A3D7334BE384 /* GameRules.swift */,
+				C6AAE60A2A04BDC416AFC808 /* GameStore.swift */,
+				AD4A4AE1C8B716DC663F316E /* Persistence.swift */,
+				FAC5BBC696FAE9EEF952FBF1 /* ShopCatalog.swift */,
+				EAFFCCFE93927238CE100DB5 /* VersionInfo.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1E94932D15EB6EF2182C0610 /* Selge */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FDE98A5BFEEB3BA6B223C34D /* Build configuration list for PBXNativeTarget "Selge" */;
+			buildPhases = (
+				099184452333BFDC39F53D25 /* Sources */,
+				C28FA1F19DC0DE59CC318E7C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Selge;
+			packageProductDependencies = (
+			);
+			productName = Selge;
+			productReference = 9F059B7FFFC916C02B2CF888 /* Selge.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2B4EB0C4CAFB690E9989D0A2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					1E94932D15EB6EF2182C0610 = {
+						DevelopmentTeam = JABSPG7D6F;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = EDF1EA5DE4FAAB7B67999EA8 /* Build configuration list for PBXProject "Selge" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 0AB2DFE089DDE9A3996621C6;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 8F151137A35D89E2AF7E10E8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1E94932D15EB6EF2182C0610 /* Selge */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C28FA1F19DC0DE59CC318E7C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6415648E239D2113B7AF2227 /* Assets.xcassets in Resources */,
+				4D44B359807F792221E6D9F4 /* CHANGELOG.md in Resources */,
+				02A74EC15EBFE36CB5141772 /* OFL.txt in Resources */,
+				96C0AFC697F536EBEB953F0C /* SelgeSerif-Bold.ttf in Resources */,
+				B5566238CA71989DE1FB8DB2 /* SelgeSerif-Regular.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		099184452333BFDC39F53D25 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE07246086B25C6A8DC235E0 /* AchievementCatalog.swift in Sources */,
+				EF94904610FA449DF1426B3A /* AchievementsView.swift in Sources */,
+				B44546CE4ED4CAAE75B9D0EB /* AdventureKind.swift in Sources */,
+				7C997A305B7ECFAE73F2B6C2 /* AdventureView.swift in Sources */,
+				A0F850C3965C5D6BC10E6E5F /* AppConfig.swift in Sources */,
+				416F77E1FD671A7B10D115D7 /* BackpackView.swift in Sources */,
+				31BE72F4C288870EC1D6041D /* ChangelogParser.swift in Sources */,
+				CCDDBA1B77C3C681C009DD47 /* ChangelogView.swift in Sources */,
+				4D3ACAA06589C34AFCA6678E /* Components.swift in Sources */,
+				9635C68694E8DFA24B251005 /* GameRules.swift in Sources */,
+				5429FED2EC5CBA7A83621F99 /* GameStore.swift in Sources */,
+				33D6E5A6DEA0BE46878A3EC4 /* HeatmapView.swift in Sources */,
+				BA1904B8F88C093C258B31F7 /* HomeView.swift in Sources */,
+				72D6213BE2DF2E2D095DBABD /* Models.swift in Sources */,
+				1E0A578E94833D0D8557C6D5 /* Persistence.swift in Sources */,
+				1C5FEC338D9403BEE05C7E14 /* RootView.swift in Sources */,
+				73E7E881F167A383801C9098 /* SelgeApp.swift in Sources */,
+				EF68B3B2F34F0D1C4226740C /* SelgeTheme.swift in Sources */,
+				D16C599633A772013F4C3179 /* SettingsView.swift in Sources */,
+				26742CFBA63B587E5AC5EC0E /* ShopCatalog.swift in Sources */,
+				AE2EBC622ABD6CD32D1F5634 /* ShopView.swift in Sources */,
+				3CB99058D574C4E0A700F831 /* VersionInfo.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2681AE070F4C2023DADD1E0F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		6FAB8DEBF411BE39E92E6A60 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		768D6ABFF683E49428334626 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 925F65CD86AED604E3A28875 /* Version.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Selge/Entitlements/Selge.entitlements;
+				DEVELOPMENT_TEAM = JABSPG7D6F;
+				INFOPLIST_FILE = Selge/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.freepotato.selge;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SELGE_CLOUDKIT;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		C268AA775BAAC3DAD17579D6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 925F65CD86AED604E3A28875 /* Version.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Selge/Entitlements/SelgeDebug.entitlements;
+				DEVELOPMENT_TEAM = JABSPG7D6F;
+				INFOPLIST_FILE = Selge/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.freepotato.selge;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EDF1EA5DE4FAAB7B67999EA8 /* Build configuration list for PBXProject "Selge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6FAB8DEBF411BE39E92E6A60 /* Debug */,
+				2681AE070F4C2023DADD1E0F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FDE98A5BFEEB3BA6B223C34D /* Build configuration list for PBXNativeTarget "Selge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C268AA775BAAC3DAD17579D6 /* Debug */,
+				768D6ABFF683E49428334626 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2B4EB0C4CAFB690E9989D0A2 /* Project object */;
+}

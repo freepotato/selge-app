@@ -1,0 +1,8 @@
+// Selge 版本配置 — 由 release-please 自动维护，请勿手动修改。
+// App 内显示版本（CFBundleShortVersionString）与 GitHub Release 版本通过此文件同步。
+// x-release-please-start-version
+MARKETING_VERSION = 0.1.0
+// x-release-please-end
+
+// 构建号：上传 TestFlight 时手动递增
+CURRENT_PROJECT_VERSION = 1
