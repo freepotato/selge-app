@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// 金币展示（金色圆形硬币符号 + 数值）
+/// 金币展示（金黄色硬币符号 + 金黄色数值）
 struct CoinText: View {
     let value: Int
     var font: Font = .system(size: 15, weight: .semibold, design: .rounded)
@@ -9,11 +9,11 @@ struct CoinText: View {
         HStack(spacing: 4) {
             Image(systemName: "circlebadge.2.fill")
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(Selge.Palette.coinGoldDeep)
+                .foregroundStyle(Selge.Palette.coinGold)
             Text("\(value)")
                 .font(font)
                 .monospacedDigit()
-                .foregroundStyle(Selge.Palette.textPrimary)
+                .foregroundStyle(Selge.Palette.coinGoldDeep)
         }
     }
 }
@@ -34,32 +34,5 @@ struct XPProgressBar: View {
             }
         }
         .frame(height: 8)
-    }
-}
-
-/// 主页类别统计卡片（免费版固定一行 3 张，付费版预留多行多卡片）
-struct StatCardView: View {
-    let emoji: String
-    let name: String
-    let count: Int
-
-    var body: some View {
-        VStack(spacing: 6) {
-            Text(emoji)
-                .font(.system(size: 26))
-            Text(name)
-                .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(Selge.Palette.textSecondary)
-            Text("\(count)")
-                .font(.system(size: 22, weight: .bold, design: .rounded))
-                .monospacedDigit()
-                .foregroundStyle(Selge.Palette.textPrimary)
-            Text("次")
-                .font(.system(size: 10))
-                .foregroundStyle(Selge.Palette.textTertiary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 14)
-        .selgeCard()
     }
 }

@@ -16,7 +16,12 @@ struct AdventureView: View {
     @State private var result: SettlementResult?
     @State private var editingRecord: AdventureRecord?
     @State private var pendingDelete: AdventureRecord?
-    @FocusState private var titleFocused: Bool
+    @FocusState private var focusedField: Field?
+
+    private enum Field: Hashable {
+        case title
+        case minutes
+    }
 
     private var selectedCategory: AdventureCategory? {
         if let selectedCategoryId, let match = categories.first(where: { $0.id == selectedCategoryId }) {
@@ -58,6 +63,14 @@ struct AdventureView: View {
             .scrollDismissesKeyboard(.interactively)
             .scrollContentBackground(.hidden)
             .background(Selge.Palette.bg)
+            // 点击任意其他区域收起键盘（不干扰行内按钮与下拉菜单）
+            .simultaneousGesture(TapGesture().onEnded { focusedField = nil })
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("完成") { focusedField = nil }
+                }
+            }
             .selgeScreenHeader()
             .alert("历险完成", isPresented: Binding(
                 get: { result != nil },
@@ -116,7 +129,7 @@ struct AdventureView: View {
     private var entrySection: some View {
         Section {
             TextField("历险标题，如：傍晚的公园散步", text: $title)
-                .focused($titleFocused)
+                .focused($focusedField, equals: .title)
                 .submitLabel(.done)
 
             Picker("类别", selection: $selectedCategoryId) {
@@ -132,6 +145,7 @@ struct AdventureView: View {
                     Spacer(minLength: 8)
                     TextField("0", text: $minutesText, prompt: Text("0"))
                         .keyboardType(.numberPad)
+                        .focused($focusedField, equals: .minutes)
                         .multilineTextAlignment(.trailing)
                         .monospacedDigit()
                         .frame(width: 56)
@@ -176,7 +190,7 @@ struct AdventureView: View {
         result = settlement
         title = ""
         minutesText = ""
-        titleFocused = false
+        focusedField = nil
     }
 
     // MARK: - 历险记录（原生列表 + 原生左滑操作）
@@ -300,6 +314,11 @@ private struct RecordEditorView: View {
     @State private var title = ""
     @State private var endedAt = Date.now
     @State private var minutesText = ""
+    @FocusState private var focusedField: Field?
+
+    private enum Field: Hashable {
+        case minutes
+    }
 
     private var minutes: Double {
         record.kind == .time ? max(0, Double(minutesText) ?? 0) : 0
@@ -328,6 +347,7 @@ private struct RecordEditorView: View {
                             Spacer(minLength: 8)
                             TextField("0", text: $minutesText, prompt: Text("0"))
                                 .keyboardType(.numberPad)
+                                .focused($focusedField, equals: .minutes)
                                 .multilineTextAlignment(.trailing)
                                 .monospacedDigit()
                                 .frame(width: 56)
@@ -356,6 +376,10 @@ private struct RecordEditorView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("保存") { save() }
                         .fontWeight(.semibold)
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("完成") { focusedField = nil }
                 }
             }
             .onAppear(perform: load)

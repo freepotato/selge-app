@@ -31,6 +31,7 @@ struct ShopView: View {
     var body: some View {
         NavigationStack {
             List {
+                balanceSection
                 if showLedger {
                     ledgerSection
                 }
@@ -77,6 +78,16 @@ struct ShopView: View {
         }
     }
 
+    // MARK: - 金币余额（置顶展示）
+
+    private var balanceSection: some View {
+        Section {
+            LabeledContent("金币") {
+                CoinText(value: hero?.coin ?? 0, font: .system(size: 17, weight: .semibold, design: .rounded))
+            }
+        }
+    }
+
     // MARK: - 商品列表（原生行 + 原生按钮）
 
     private var shopSection: some View {
@@ -86,13 +97,8 @@ struct ShopView: View {
                     buy(item)
                 }
             }
-        } footer: {
-            HStack(spacing: 3) {
-                Image(systemName: "circlebadge.2.fill")
-                    .font(.system(size: 10))
-                Text("当前金币 \(hero?.coin ?? 0)")
-                    .monospacedDigit()
-            }
+        } header: {
+            Text("商品")
         }
     }
 
@@ -157,7 +163,7 @@ private struct ShopItemRow: View {
                 HStack(spacing: 3) {
                     Image(systemName: "circlebadge.2.fill")
                         .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(Selge.Palette.coinGoldDeep)
+                        .foregroundStyle(Selge.Palette.coinGold)
                     Text("\(item.priceCoin)")
                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                         .monospacedDigit()

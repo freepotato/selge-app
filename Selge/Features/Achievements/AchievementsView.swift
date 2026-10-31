@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-/// 成就页：分段控件分页（默认「全部」），圆形 3D 徽章支持摆动旋转
+/// 成就页：原生分组列表 —— 顶部分类分段控件，下面逐行展示徽章
 struct AchievementsView: View {
     @Environment(GameStore.self) private var store
     @Query private var records: [AdventureRecord]
@@ -40,51 +40,54 @@ struct AchievementsView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 12) {
-                Picker("分类", selection: $selectedGroup) {
-                    ForEach(AchievementCatalog.groups, id: \.key) { group in
-                        Text(group.label).tag(group.key)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal, 16)
-
-                ScrollView {
-                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)], spacing: 18) {
-                        ForEach(shownDefs) { def in
-                            BadgeCard(
-                                def: def,
-                                unlockedAt: unlockedMap[def.id],
-                                currentCount: counts[def.group] ?? 0
-                            )
+            List {
+                Section {
+                    Picker("分类", selection: $selectedGroup) {
+                        ForEach(AchievementCatalog.groups, id: \.key) { group in
+                            Text(group.label).tag(group.key)
                         }
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 20)
+                    .pickerStyle(.segmented)
+                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                }
+
+                Section {
+                    ForEach(shownDefs) { def in
+                        AchievementRow(
+                            def: def,
+                            unlockedAt: unlockedMap[def.id],
+                            currentCount: counts[def.group] ?? 0
+                        )
+                    }
+                } header: {
+                    Text("徽章")
                 }
             }
-            .padding(.top, 6)
+            .listStyle(.insetGrouped)
+            .tint(Selge.Palette.accent)
+            .scrollContentBackground(.hidden)
             .background(Selge.Palette.bg)
             .selgeScreenHeader()
         }
     }
 }
 
-// MARK: - 3D 徽章卡片
+// MARK: - 单个成就行
 
-/// 圆形 3D 徽章（质感参考 Apple 健身徽章）：
-/// 手指左右摆动旋转，松手后带回弹惯性的钟摆动画；旋转角度受限，不可翻至背面。
-struct BadgeCard: View {
+/// 圆形 3D 徽章（质感参考 Apple 健身徽章）：手指左右摆动旋转，
+/// 松手后带回弹惯性的钟摆动画；旋转角度受限，不可翻至背面。
+private struct AchievementRow: View {
     let def: AchievementDef
     let unlockedAt: Date?
     let currentCount: Int
 
     @State private var swingAngle: Double = 0
+
     private var isUnlocked: Bool { unlockedAt != nil }
 
     var body: some View {
-        VStack(spacing: 10) {
-            badge
+        HStack(spacing: 12) {
+            BadgeArt(icon: def.icon, unlocked: isUnlocked, size: 46)
                 .rotation3DEffect(
                     .degrees(swingAngle),
                     axis: (x: 0, y: 1, z: 0),
@@ -92,86 +95,32 @@ struct BadgeCard: View {
                 )
                 .gesture(swingGesture)
 
-            VStack(spacing: 3) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(def.name)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(isUnlocked ? Selge.Palette.textPrimary : Selge.Palette.textTertiary)
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundStyle(isUnlocked ? Selge.Palette.textPrimary : .secondary)
                 Text(def.desc)
-                    .font(.system(size: 11))
-                    .foregroundStyle(Selge.Palette.textTertiary)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
                     .lineLimit(2)
-                    .multilineTextAlignment(.center)
-                Text(subtitle)
-                    .font(.system(size: 10, design: .rounded))
+            }
+
+            Spacer(minLength: 8)
+
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(isUnlocked ? "已解锁" : "\(min(currentCount, def.requirement)) / \(def.requirement)")
+                    .font(.footnote)
                     .monospacedDigit()
-                    .foregroundStyle(isUnlocked ? Selge.Palette.accent : Selge.Palette.textTertiary)
-            }
-            .frame(maxWidth: .infinity)
-        }
-        .padding(10)
-        .selgeCard()
-        .opacity(isUnlocked ? 1 : 0.82)
-    }
-
-    private var subtitle: String {
-        if let date = unlockedAt {
-            return Self.dateFormatter.string(from: date) + " 解锁"
-        }
-        return "\(min(currentCount, def.requirement)) / \(def.requirement)"
-    }
-
-    // MARK: 徽章视觉
-
-    private var badge: some View {
-        ZStack {
-            // 底层外圈（立体渐变环）
-            Circle()
-                .fill(
-                    LinearGradient(
-                        colors: ringColors,
-                        startPoint: .topLeading, endPoint: .bottomTrailing
-                    )
-                )
-            // 内圈
-            Circle()
-                .fill(innerFill)
-                .padding(9)
-            // 高光
-            Circle()
-                .fill(
-                    LinearGradient(
-                        colors: [.white.opacity(0.5), .clear],
-                        startPoint: .top, endPoint: .center
-                    )
-                )
-                .padding(9)
-                .blendMode(.plusLighter)
-                .allowsHitTesting(false)
-            // 内容
-            if isUnlocked {
-                Text(def.icon)
-                    .font(.system(size: 34))
-                    .shadow(color: .black.opacity(0.15), radius: 2, y: 1)
-            } else {
-                Image(systemName: "lock.fill")
-                    .font(.system(size: 22, weight: .medium))
-                    .foregroundStyle(Selge.Palette.textTertiary)
+                    .foregroundStyle(isUnlocked ? Selge.Palette.accent : .secondary)
+                if let unlockedAt {
+                    Text(Self.dateFormatter.string(from: unlockedAt))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
-        .frame(width: 92, height: 92)
-        .shadow(color: .black.opacity(isUnlocked ? 0.18 : 0.08), radius: 6, x: 0, y: 3)
-    }
-
-    private var ringColors: [Color] {
-        isUnlocked
-            ? [Selge.g3, Selge.g5]
-            : [Selge.Palette.border, Selge.Palette.borderStrong]
-    }
-
-    private var innerFill: AnyShapeStyle {
-        isUnlocked
-            ? AnyShapeStyle(LinearGradient(colors: [Selge.g1, Selge.g2], startPoint: .top, endPoint: .bottom))
-            : AnyShapeStyle(LinearGradient(colors: [Selge.Palette.bg2, Selge.Palette.bg2], startPoint: .top, endPoint: .bottom))
+        .padding(.vertical, 2)
+        .opacity(isUnlocked ? 1 : 0.85)
     }
 
     // MARK: 摆动手势（角度受限 + 惯性回弹）
@@ -196,4 +145,64 @@ struct BadgeCard: View {
         formatter.dateFormat = "yyyy.MM.dd"
         return formatter
     }()
+}
+
+// MARK: - 3D 徽章图形
+
+private struct BadgeArt: View {
+    let icon: String
+    let unlocked: Bool
+    let size: CGFloat
+
+    var body: some View {
+        ZStack {
+            // 底层外圈（立体渐变环）
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: ringColors,
+                        startPoint: .topLeading, endPoint: .bottomTrailing
+                    )
+                )
+            // 内圈
+            Circle()
+                .fill(innerFill)
+                .padding(size * 0.1)
+            // 高光
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: [.white.opacity(0.5), .clear],
+                        startPoint: .top, endPoint: .center
+                    )
+                )
+                .padding(size * 0.1)
+                .blendMode(.plusLighter)
+                .allowsHitTesting(false)
+            // 内容
+            if unlocked {
+                Text(icon)
+                    .font(.system(size: size * 0.42))
+                    .shadow(color: .black.opacity(0.15), radius: 1, y: 1)
+            } else {
+                Image(systemName: "lock.fill")
+                    .font(.system(size: size * 0.26, weight: .medium))
+                    .foregroundStyle(Selge.Palette.textTertiary)
+            }
+        }
+        .frame(width: size, height: size)
+        .shadow(color: .black.opacity(unlocked ? 0.16 : 0.06), radius: 3, x: 0, y: 2)
+    }
+
+    private var ringColors: [Color] {
+        unlocked
+            ? [Selge.g3, Selge.g5]
+            : [Selge.Palette.border, Selge.Palette.borderStrong]
+    }
+
+    private var innerFill: AnyShapeStyle {
+        unlocked
+            ? AnyShapeStyle(LinearGradient(colors: [Selge.g1, Selge.g2], startPoint: .top, endPoint: .bottom))
+            : AnyShapeStyle(LinearGradient(colors: [Selge.Palette.bg2, Selge.Palette.bg2], startPoint: .top, endPoint: .bottom))
+    }
 }
