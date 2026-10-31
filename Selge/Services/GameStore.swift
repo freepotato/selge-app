@@ -1,8 +1,9 @@
 import Foundation
 import SwiftData
 
-/// 一次历险结算的结果（用于结算页展示）
+/// 一次历险结算的结果（用于结算展示）
 struct SettlementResult {
+    let title: String
     let categoryName: String
     let emoji: String
     let minutes: Double
@@ -111,23 +112,17 @@ final class GameStore {
 
     // MARK: - 历险结算
 
-    /// 计时型结算
-    func settle(category: AdventureCategory, startedAt: Date, endedAt: Date) -> SettlementResult {
-        let minutes = max(0, endedAt.timeIntervalSince(startedAt) / 60)
-        return settle(category: category, minutes: minutes, startedAt: startedAt, endedAt: endedAt)
-    }
-
-    /// 难度型（单次）结算
-    func settleOnce(category: AdventureCategory) -> SettlementResult {
-        settle(category: category, minutes: 0, startedAt: nil, endedAt: Date.now)
-    }
-
-    private func settle(category: AdventureCategory, minutes: Double, startedAt: Date?, endedAt: Date) -> SettlementResult {
+    /// 结算一次历险：
+    /// - 计时型：经验 = 分钟 × 每分钟经验
+    /// - 难度型（单次）：经验 = 单次经验
+    /// - `title` 为用户输入的历险标题，写入记录用于展示
+    func settle(category: AdventureCategory, minutes: Double, title: String, endedAt: Date = Date.now) -> SettlementResult {
         let hero = hero()
+        let cleanTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let xp: Int
         switch category.kind {
         case .time:
-            xp = GameRules.xp(minutes: minutes, perMinute: category.xpPerMinute)
+            xp = GameRules.xp(minutes: max(0, minutes), perMinute: category.xpPerMinute)
         case .once:
             xp = category.baseXP
         }
@@ -142,8 +137,11 @@ final class GameStore {
         record.kindRaw = category.kindRaw
         record.xp = xp
         record.coin = coin
-        record.minutes = category.kind == .time ? minutes : 0
-        record.startedAt = startedAt
+        record.minutes = category.kind == .time ? max(0, minutes) : 0
+        record.note = cleanTitle.isEmpty ? nil : cleanTitle
+        record.startedAt = category.kind == .time
+            ? endedAt.addingTimeInterval(-max(0, minutes) * 60)
+            : nil
         record.endedAt = endedAt
         record.dayKey = GameRules.dayKey(for: endedAt)
         context.insert(record)
@@ -152,9 +150,8 @@ final class GameStore {
         if let hero {
             hero.xp += xp
             hero.coin += coin
-            let day = endedAt
-            hero.streak = GameRules.nextStreak(lastDay: hero.lastAdventureDay, newDay: day, current: hero.streak)
-            hero.lastAdventureDay = day
+            hero.streak = GameRules.nextStreak(lastDay: hero.lastAdventureDay, newDay: endedAt, current: hero.streak)
+            hero.lastAdventureDay = endedAt
             hero.updatedAt = Date.now
         }
 
@@ -175,9 +172,10 @@ final class GameStore {
         try? context.save()
 
         return SettlementResult(
+            title: cleanTitle.isEmpty ? category.name : cleanTitle,
             categoryName: category.name,
             emoji: category.emoji,
-            minutes: minutes,
+            minutes: category.kind == .time ? max(0, minutes) : 0,
             xp: xp,
             coin: coin,
             beforeLevel: beforeLevel,

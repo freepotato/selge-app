@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02A74EC15EBFE36CB5141772 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1B34D225A944B6647FDAE505 /* OFL.txt */; };
 		1C5FEC338D9403BEE05C7E14 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC351A2640FA71AFC748230E /* RootView.swift */; };
 		1E0A578E94833D0D8557C6D5 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4A4AE1C8B716DC663F316E /* Persistence.swift */; };
 		26742CFBA63B587E5AC5EC0E /* ShopCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC5BBC696FAE9EEF952FBF1 /* ShopCatalog.swift */; };
@@ -22,12 +23,13 @@
 		73E7E881F167A383801C9098 /* SelgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A31B4F33570071F5D59A67 /* SelgeApp.swift */; };
 		7C997A305B7ECFAE73F2B6C2 /* AdventureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9758118565390D6E89B1B38 /* AdventureView.swift */; };
 		9635C68694E8DFA24B251005 /* GameRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6266C99BA2C7A3D7334BE384 /* GameRules.swift */; };
+		96C0AFC697F536EBEB953F0C /* SelgeSerif-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4A990B625EADC3A290D27E87 /* SelgeSerif-Bold.ttf */; };
 		A0F850C3965C5D6BC10E6E5F /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8BF480582231CCF3CE183 /* AppConfig.swift */; };
 		AE2EBC622ABD6CD32D1F5634 /* ShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F992BDF6F20F07441188AFF /* ShopView.swift */; };
 		B44546CE4ED4CAAE75B9D0EB /* AdventureKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FC70DC422F86AEF3AE8AF1 /* AdventureKind.swift */; };
+		B5566238CA71989DE1FB8DB2 /* SelgeSerif-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93AF395C2A948FAFCBF7A5FB /* SelgeSerif-Regular.ttf */; };
 		BA1904B8F88C093C258B31F7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778FC391B9C064CF4F1F52EB /* HomeView.swift */; };
 		BE07246086B25C6A8DC235E0 /* AchievementCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92DE6EC52F7BD03BAF6B750 /* AchievementCatalog.swift */; };
-		C6D7355C5139BB30FA397E85 /* AdventureSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E1B6F56DD09454EDC304DA /* AdventureSessionView.swift */; };
 		CCDDBA1B77C3C681C009DD47 /* ChangelogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C519DE8C820238759BCCA655 /* ChangelogView.swift */; };
 		D16C599633A772013F4C3179 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D127E477211E677B40BD0F3 /* SettingsView.swift */; };
 		EF68B3B2F34F0D1C4226740C /* SelgeTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F00DBE8FB05F39029461A8 /* SelgeTheme.swift */; };
@@ -37,10 +39,12 @@
 /* Begin PBXFileReference section */
 		14DA0911D06DCD479A24172A /* Selge.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Selge.entitlements; sourceTree = "<group>"; };
 		16208DD987A945E68A9D61AA /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		1B34D225A944B6647FDAE505 /* OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
 		35B03ED788E00D8E6FEC17FA /* ChangelogParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogParser.swift; sourceTree = "<group>"; };
 		3C4030A5C5E2B285986C1B88 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		3F3A1903E1FB44B1960275E2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		44F00DBE8FB05F39029461A8 /* SelgeTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelgeTheme.swift; sourceTree = "<group>"; };
+		4A990B625EADC3A290D27E87 /* SelgeSerif-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SelgeSerif-Bold.ttf"; sourceTree = "<group>"; };
 		6266C99BA2C7A3D7334BE384 /* GameRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameRules.swift; sourceTree = "<group>"; };
 		6B9B9EF478FB3BF867FB183A /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		75E8BF480582231CCF3CE183 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
@@ -48,7 +52,7 @@
 		7F992BDF6F20F07441188AFF /* ShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopView.swift; sourceTree = "<group>"; };
 		8D127E477211E677B40BD0F3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		925F65CD86AED604E3A28875 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
-		95E1B6F56DD09454EDC304DA /* AdventureSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureSessionView.swift; sourceTree = "<group>"; };
+		93AF395C2A948FAFCBF7A5FB /* SelgeSerif-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SelgeSerif-Regular.ttf"; sourceTree = "<group>"; };
 		9EE38D72161649F7D7324922 /* HeatmapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapView.swift; sourceTree = "<group>"; };
 		9F059B7FFFC916C02B2CF888 /* Selge.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Selge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A781F5563038F86BB84CFB40 /* SelgeDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SelgeDebug.entitlements; sourceTree = "<group>"; };
@@ -124,7 +128,6 @@
 		3FBECC67C87AE1E24113C5CC /* Adventure */ = {
 			isa = PBXGroup;
 			children = (
-				95E1B6F56DD09454EDC304DA /* AdventureSessionView.swift */,
 				E9758118565390D6E89B1B38 /* AdventureView.swift */,
 			);
 			path = Adventure;
@@ -168,6 +171,9 @@
 		6275CC646F04EC03D0DB7B97 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1B34D225A944B6647FDAE505 /* OFL.txt */,
+				4A990B625EADC3A290D27E87 /* SelgeSerif-Bold.ttf */,
+				93AF395C2A948FAFCBF7A5FB /* SelgeSerif-Regular.ttf */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -293,6 +299,9 @@
 			files = (
 				6415648E239D2113B7AF2227 /* Assets.xcassets in Resources */,
 				4D44B359807F792221E6D9F4 /* CHANGELOG.md in Resources */,
+				02A74EC15EBFE36CB5141772 /* OFL.txt in Resources */,
+				96C0AFC697F536EBEB953F0C /* SelgeSerif-Bold.ttf in Resources */,
+				B5566238CA71989DE1FB8DB2 /* SelgeSerif-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,7 +315,6 @@
 				BE07246086B25C6A8DC235E0 /* AchievementCatalog.swift in Sources */,
 				EF94904610FA449DF1426B3A /* AchievementsView.swift in Sources */,
 				B44546CE4ED4CAAE75B9D0EB /* AdventureKind.swift in Sources */,
-				C6D7355C5139BB30FA397E85 /* AdventureSessionView.swift in Sources */,
 				7C997A305B7ECFAE73F2B6C2 /* AdventureView.swift in Sources */,
 				A0F850C3965C5D6BC10E6E5F /* AppConfig.swift in Sources */,
 				416F77E1FD671A7B10D115D7 /* BackpackView.swift in Sources */,

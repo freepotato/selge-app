@@ -1,39 +1,181 @@
 import SwiftUI
 
-/// 历险热力图（GitHub 贡献图样式，无标题文字）
-/// 列 = 周，行 = 周日～周六；颜色深浅代表当日历险次数
+/// 历险热力图（GitHub 贡献图样式）
+/// 列 = 周，行 = 周日～周六；顶部标注月份、左侧标注星期，
+/// 按住任意方块（可拖动）显示该天的历险次数。
 struct HeatmapView: View {
     let records: [AdventureRecord]
 
     private static let calendar = Calendar.current
-    private static let weekColumns = 22
+    static let weekColumnCount = 22
+    private static let gap: CGFloat = 3
+    private static let weekdayLabelWidth: CGFloat = 20
+    private static let monthLabelHeight: CGFloat = 15
+
+    @State private var touched: DayCell?
 
     var body: some View {
         GeometryReader { proxy in
             let grid = Self.buildGrid(records: records)
-            let gap: CGFloat = 2
-            let weeks = grid.count
-            let cellW = weeks > 1 ? (proxy.size.width - gap * CGFloat(weeks - 1)) / CGFloat(weeks) : proxy.size.width
-            let cellH = (proxy.size.height - gap * 6) / 7
-            let cell = max(4, min(cellW, cellH))
+            let metrics = Metrics(size: proxy.size, weeks: grid.count)
 
-            HStack(alignment: .top, spacing: gap) {
-                ForEach(grid.indices, id: \.self) { weekIndex in
-                    let week = grid[weekIndex]
-                    VStack(spacing: gap) {
-                        ForEach(week.indices, id: \.self) { dayIndex in
-                            let day = week[dayIndex]
-                            RoundedRectangle(cornerRadius: cell * 0.22, style: .continuous)
-                                .fill(day.fill)
-                                .aspectRatio(1, contentMode: .fit)
-                                .frame(maxWidth: cell)
-                                .accessibilityLabel(day.accessibilityLabel)
-                        }
-                    }
+            ZStack(alignment: .topLeading) {
+                monthLabels(grid: grid, metrics: metrics)
+                weekdayLabels(metrics: metrics)
+                cells(grid: grid, metrics: metrics)
+
+                if let touched, let point = tooltipOffset(for: touched, grid: grid, metrics: metrics, size: proxy.size) {
+                    tooltip(for: touched)
+                        .offset(x: point.x, y: point.y)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                    .onChanged { value in
+                        let hit = cell(at: value.location, grid: grid, metrics: metrics)
+                        if hit != touched { touched = hit }
+                    }
+                    .onEnded { _ in touched = nil }
+            )
+            .animation(.easeOut(duration: 0.12), value: touched)
         }
+    }
+
+    // MARK: - 网格
+
+    private func cells(grid: [[DayCell]], metrics: Metrics) -> some View {
+        ForEach(grid.indices, id: \.self) { col in
+            ForEach(grid[col].indices, id: \.self) { row in
+                let day = grid[col][row]
+                RoundedRectangle(cornerRadius: metrics.cell * 0.22, style: .continuous)
+                    .fill(day.fill)
+                    .frame(width: metrics.cell, height: metrics.cell)
+                    .overlay {
+                        if touched?.key == day.key {
+                            RoundedRectangle(cornerRadius: metrics.cell * 0.22, style: .continuous)
+                                .strokeBorder(Selge.Palette.textPrimary.opacity(0.8), lineWidth: 1.5)
+                        }
+                    }
+                    .offset(x: metrics.x(col), y: metrics.y(row))
+                    .accessibilityLabel(day.accessibilityLabel)
+            }
+        }
+    }
+
+    /// 月份标签：某列起始日进入新月份时，在该列上方显示「x月」
+    private func monthLabels(grid: [[DayCell]], metrics: Metrics) -> some View {
+        let labels = monthLabelItems(grid: grid)
+        return ForEach(labels, id: \.column) { item in
+            Text(item.text)
+                .font(.system(size: 9, design: .rounded))
+                .foregroundStyle(Selge.Palette.textTertiary)
+                .fixedSize()
+                .offset(x: metrics.x(item.column), y: metrics.originY - Self.monthLabelHeight + 2)
+        }
+    }
+
+    /// 星期标签：与 GitHub 一致，只标注周一、周三、周五（行 1 / 3 / 5）
+    private func weekdayLabels(metrics: Metrics) -> some View {
+        ForEach([1, 3, 5], id: \.self) { row in
+            Text(Self.weekdayText(row))
+                .font(.system(size: 9, design: .rounded))
+                .foregroundStyle(Selge.Palette.textTertiary)
+                .frame(width: Self.weekdayLabelWidth - 4, height: metrics.cell, alignment: .trailing)
+                .offset(x: 0, y: metrics.y(row))
+        }
+    }
+
+    /// 悬浮提示：展示当日日期与历险次数
+    private func tooltip(for day: DayCell) -> some View {
+        Text("\(day.label) · \(day.count) 次历险")
+            .font(.system(size: 11, weight: .medium, design: .rounded))
+            .monospacedDigit()
+            .foregroundStyle(Selge.Palette.surface)
+            .padding(.horizontal, 9)
+            .padding(.vertical, 5)
+            .background(Selge.Palette.textPrimary.opacity(0.9))
+            .clipShape(Capsule())
+            .fixedSize()
+            .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
+            .allowsHitTesting(false)
+    }
+
+    // MARK: - 命中与定位
+
+    private func cell(at location: CGPoint, grid: [[DayCell]], metrics: Metrics) -> DayCell? {
+        let step = metrics.cell + Self.gap
+        guard location.x >= metrics.originX, location.y >= metrics.originY else { return nil }
+        // 向下取整到最近的格子，手指落在间隙时也能命中相邻方块，避免提示闪烁
+        let col = Int((location.x - metrics.originX) / step)
+        let row = Int((location.y - metrics.originY) / step)
+        guard col >= 0, col < grid.count, row >= 0, row < 7 else { return nil }
+        let day = grid[col][row]
+        return day.isFuture ? nil : day
+    }
+
+    private func tooltipOffset(for day: DayCell, grid: [[DayCell]], metrics: Metrics, size: CGSize) -> CGPoint? {
+        guard let col = grid.firstIndex(where: { $0.contains(day) }),
+              let row = grid[col].firstIndex(of: day) else {
+            return nil
+        }
+        let centerX = metrics.x(col) + metrics.cell / 2
+        let estimatedWidth: CGFloat = 108
+        let x = min(max(centerX - estimatedWidth / 2, 0), max(0, size.width - estimatedWidth))
+        let above = metrics.y(row) - 24
+        let y = above > Self.monthLabelHeight ? above : metrics.y(row) + metrics.cell + 4
+        return CGPoint(x: x, y: y)
+    }
+
+    private func monthLabelItems(grid: [[DayCell]]) -> [(column: Int, text: String)] {
+        var items: [(Int, String)] = []
+        var lastMonth = -1
+        var lastColumn = -100
+        for (col, week) in grid.enumerated() {
+            guard let first = week.first else { continue }
+            let month = Self.calendar.component(.month, from: first.date)
+            if month != lastMonth, col - lastColumn >= 3 {
+                items.append((col, "\(month)月"))
+                lastMonth = month
+                lastColumn = col
+            }
+        }
+        return items
+    }
+
+    private static func weekdayText(_ row: Int) -> String {
+        switch row {
+        case 1: return "一"
+        case 3: return "三"
+        case 5: return "五"
+        default: return ""
+        }
+    }
+
+    // MARK: - 度量
+
+    private struct Metrics {
+        let cell: CGFloat
+        let originX: CGFloat
+        let originY: CGFloat
+
+        init(size: CGSize, weeks: Int) {
+            let availableWidth = max(0, size.width - HeatmapView.weekdayLabelWidth)
+            let availableHeight = max(0, size.height - HeatmapView.monthLabelHeight)
+            let byWidth = (availableWidth - HeatmapView.gap * CGFloat(weeks - 1)) / CGFloat(max(weeks, 1))
+            let byHeight = (availableHeight - HeatmapView.gap * 6) / 7
+            let cell = max(4, min(byWidth, byHeight))
+            let gridWidth = cell * CGFloat(weeks) + HeatmapView.gap * CGFloat(weeks - 1)
+            let gridHeight = cell * 7 + HeatmapView.gap * 6
+            self.cell = cell
+            self.originX = HeatmapView.weekdayLabelWidth + max(0, (availableWidth - gridWidth) / 2)
+            // 垂直居中，避免主页下方出现大片空白
+            self.originY = HeatmapView.monthLabelHeight + max(0, (availableHeight - gridHeight) / 2)
+        }
+
+        func x(_ col: Int) -> CGFloat { originX + CGFloat(col) * (cell + HeatmapView.gap) }
+        func y(_ row: Int) -> CGFloat { originY + CGFloat(row) * (cell + HeatmapView.gap) }
     }
 
     // MARK: - 数据构建
@@ -43,6 +185,7 @@ struct HeatmapView: View {
         let count: Int
         let isFuture: Bool
         let label: String
+        let date: Date
 
         var fill: Color {
             if isFuture { return .clear }
@@ -60,7 +203,7 @@ struct HeatmapView: View {
         }
     }
 
-    static func buildGrid(records: [AdventureRecord], weeks: Int = Self.weekColumns) -> [[DayCell]] {
+    static func buildGrid(records: [AdventureRecord], weeks: Int = Self.weekColumnCount) -> [[DayCell]] {
         let today = calendar.startOfDay(for: Date.now)
         let counts = Dictionary(grouping: records, by: \.dayKey).mapValues(\.count)
 
@@ -69,11 +212,9 @@ struct HeatmapView: View {
         let currentWeekStart = calendar.date(byAdding: .day, value: -(weekday - 1), to: today)!
         let firstWeekStart = calendar.date(byAdding: .day, value: -7 * (weeks - 1), to: currentWeekStart)!
 
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        let displayFormatter = DateFormatter()
-        displayFormatter.dateFormat = "M月d日"
+        let keyFormatter = DateFormatter()
+        keyFormatter.dateFormat = "yyyy-MM-dd"
+        keyFormatter.locale = Locale(identifier: "en_US_POSIX")
 
         var grid: [[DayCell]] = []
         for week in 0..<weeks {
@@ -81,17 +222,23 @@ struct HeatmapView: View {
             for dayIndex in 0..<7 {
                 guard let date = calendar.date(byAdding: .day, value: week * 7 + dayIndex, to: firstWeekStart) else { continue }
                 let isFuture = date > today
-                let key = formatter.string(from: date)
-                let count = counts[key] ?? 0
+                let key = keyFormatter.string(from: date)
                 column.append(DayCell(
                     key: key,
-                    count: count,
+                    count: counts[key] ?? 0,
                     isFuture: isFuture,
-                    label: displayFormatter.string(from: date)
+                    label: labelText(for: date),
+                    date: date
                 ))
             }
             grid.append(column)
         }
         return grid
+    }
+
+    private static func labelText(for date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M月d日"
+        return formatter.string(from: date)
     }
 }

@@ -17,10 +17,25 @@ struct AchievementsView: View {
         store.groupCounts(records: records, categories: categories)
     }
 
+    /// 排序规则：已解锁在前，解锁时间越新越靠前；未解锁按达成门槛由易到难
     private var shownDefs: [AchievementDef] {
-        selectedGroup == "all"
+        let defs = selectedGroup == "all"
             ? AchievementCatalog.all
             : AchievementCatalog.all.filter { $0.group == selectedGroup }
+        return defs.sorted { lhs, rhs in
+            switch (unlockedMap[lhs.id], unlockedMap[rhs.id]) {
+            case let (left?, right?):
+                if left != right { return left > right }
+                return lhs.requirement < rhs.requirement
+            case (_?, nil):
+                return true
+            case (nil, _?):
+                return false
+            default:
+                if lhs.requirement != rhs.requirement { return lhs.requirement < rhs.requirement }
+                return lhs.id < rhs.id
+            }
+        }
     }
 
     var body: some View {

@@ -20,21 +20,7 @@ enum GameRules {
     /// 金币倍率：金币 = 经验 × 1.5（免费版锁死，付费版预留可配置）
     static let defaultCoinMultiplier: Double = 1.5
 
-    /// 等级称谓
-    static func levelTitle(_ level: Int) -> String {
-        switch level {
-        case 9: return "致皇"
-        case 8: return "致王"
-        case 7: return "致尊"
-        case 6: return "致宗"
-        case 5: return "致灵"
-        case 4: return "大致师"
-        case 3: return "致师"
-        case 2: return "致者"
-        default: return "致徒"
-        }
-    }
-
+    /// 当前等级（1...maxLevel）
     static func level(forXP xp: Int) -> Int {
         var level = 1
         for i in (1...maxLevel).reversed() {
@@ -47,17 +33,17 @@ enum GameRules {
     }
 
     /// 当前等级内的进度信息
-    static func progress(forXP xp: Int) -> (level: Int, title: String, current: Int, needed: Int, fraction: Double) {
+    static func progress(forXP xp: Int) -> (level: Int, current: Int, needed: Int, fraction: Double) {
         let level = Self.level(forXP: xp)
         if level >= maxLevel {
-            return (maxLevel, levelTitle(maxLevel), 1, 1, 1)
+            return (maxLevel, 1, 1, 1)
         }
         let lower = xpTable[level] ?? 0
         let upper = xpTable[level + 1] ?? lower + 500
         let current = xp - lower
         let needed = upper - lower
         let fraction = needed > 0 ? Double(current) / Double(needed) : 0
-        return (level, levelTitle(level), current, needed, min(max(fraction, 0), 1))
+        return (level, current, needed, min(max(fraction, 0), 1))
     }
 
     /// 计时型结算经验（分钟 × 每分钟经验，四舍五入）

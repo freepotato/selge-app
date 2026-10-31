@@ -66,14 +66,16 @@ enum Selge {
     }
 
     // MARK: 字体
-    // Logo 使用宋体传递严谨清晰的调性，正文使用系统默认字体
+    // Logo 使用内置的宋体风格字体（思源宋体子集 SelgeSerif，随 App 打包），
+    // 不依赖设备是否预装 Songti SC，保证在任何 iPhone 上都呈现宋体调性；
+    // 正文使用系统默认字体保证易读性。
 
     static func logoFont(_ size: CGFloat) -> Font {
-        .custom("STSongti-SC-Bold", size: size)
+        .custom("SelgeSerif-Bold", size: size)
     }
 
     static func logoFontRegular(_ size: CGFloat) -> Font {
-        .custom("STSongti-SC-Regular", size: size)
+        .custom("SelgeSerif-Regular", size: size)
     }
 
     // 主色微渐变（启动页 / 强调场景）：主题绿渐变，保证白色 S 标识清晰可见
