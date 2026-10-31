@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-/// 背包：查看已购物品并支持消耗
+/// 背包：查看已购物品并支持消耗（原生列表）
 struct BackpackView: View {
     @Environment(GameStore.self) private var store
     @Environment(\.dismiss) private var dismiss
@@ -14,28 +14,33 @@ struct BackpackView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 16) {
-                    if available.isEmpty && consumed.isEmpty {
-                        emptyView
-                    } else {
-                        if !available.isEmpty {
-                            section(title: "可用", items: available)
+            List {
+                if items.isEmpty {
+                    emptyView
+                } else {
+                    if !available.isEmpty {
+                        Section("可用") {
+                            ForEach(available, id: \.id) { item in
+                                backpackRow(item)
+                            }
                         }
-                        if !consumed.isEmpty {
-                            section(title: "已消耗", items: consumed)
+                    }
+                    if !consumed.isEmpty {
+                        Section("已消耗") {
+                            ForEach(consumed, id: \.id) { item in
+                                backpackRow(item)
+                            }
                         }
                     }
                 }
-                .padding(16)
             }
-            .background(Selge.Palette.bg)
+            .listStyle(.insetGrouped)
+            .tint(Selge.Palette.accent)
             .navigationTitle("背包")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("完成") { dismiss() }
-                        .foregroundStyle(Selge.Palette.accent)
                 }
             }
             .confirmationDialog(
@@ -56,29 +61,19 @@ struct BackpackView: View {
     }
 
     private var emptyView: some View {
-        VStack(spacing: 10) {
-            Image(systemName: "shippingbox")
-                .font(.system(size: 34))
-                .foregroundStyle(Selge.Palette.textTertiary)
-            Text("背包还是空的")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(Selge.Palette.textSecondary)
-            Text("去商店用金币换取奖励吧")
-                .font(.system(size: 12))
-                .foregroundStyle(Selge.Palette.textTertiary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 60)
-    }
-
-    private func section(title: String, items: [PurchasedItem]) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(title)
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(Selge.Palette.textTertiary)
-            ForEach(items, id: \.id) { item in
-                backpackRow(item)
+        Section {
+            VStack(spacing: 8) {
+                Image(systemName: "shippingbox")
+                    .font(.system(size: 30, weight: .light))
+                    .foregroundStyle(.secondary)
+                Text("背包还是空的")
+                    .font(.headline)
+                Text("去商店用金币换取奖励吧")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 40)
         }
     }
 
@@ -86,34 +81,31 @@ struct BackpackView: View {
         HStack(spacing: 12) {
             Text(item.emoji)
                 .font(.system(size: 24))
-                .frame(width: 44, height: 44)
+                .frame(width: 40, height: 40)
                 .background(Selge.Palette.bg2)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
                 .opacity(item.isConsumed ? 0.45 : 1)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.name)
                     .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(item.isConsumed ? Selge.Palette.textTertiary : Selge.Palette.textPrimary)
+                    .foregroundStyle(item.isConsumed ? .secondary : Selge.Palette.textPrimary)
                 Text(Self.dateFormatter.string(from: item.purchasedAt))
                     .font(.system(size: 11, design: .rounded))
-                    .foregroundStyle(Selge.Palette.textTertiary)
+                    .foregroundStyle(.secondary)
             }
-            Spacer()
+            Spacer(minLength: 8)
             if item.isConsumed {
                 Text("已消耗")
-                    .font(.system(size: 12))
-                    .foregroundStyle(Selge.Palette.textTertiary)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             } else {
                 Button("消耗") { consumable = item }
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Selge.Palette.accent)
                     .buttonStyle(.bordered)
                     .controlSize(.small)
             }
         }
-        .padding(12)
-        .selgeCard()
+        .padding(.vertical, 2)
     }
 
     private static let dateFormatter: DateFormatter = {

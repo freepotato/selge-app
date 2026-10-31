@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-/// 商店：卡片式商品列表；下拉刷新展示账户明细；内置背包入口
+/// 商店：原生列表商品行；下拉刷新展示账户明细；内置背包入口
 struct ShopView: View {
     @Environment(GameStore.self) private var store
     @Query private var heroes: [HeroProfile]
@@ -10,6 +10,7 @@ struct ShopView: View {
     private var items: [ShopItem]
     @State private var showBackpack = false
     @State private var showLedger = false
+    @State private var ledgerExpanded = false
     @State private var purchaseAlert: PurchaseAlert?
 
     struct PurchaseAlert: Identifiable {
@@ -23,35 +24,29 @@ struct ShopView: View {
 
     private var hero: HeroProfile? { heroes.first }
 
+    private var transactions: [AccountTransaction] {
+        store.recentTransactions(limit: ledgerExpanded ? 30 : 8)
+    }
+
     var body: some View {
         NavigationStack {
-            ScrollView {
-                LazyVStack(spacing: 12) {
-                    if showLedger {
-                        LedgerSection()
-                            .transition(.opacity.combined(with: .move(edge: .top)))
-                    }
-
-                    ForEach(items, id: \.id) { item in
-                        ShopItemCard(item: item, coin: hero?.coin ?? 0) {
-                            buy(item)
-                        }
-                    }
+            List {
+                if showLedger {
+                    ledgerSection
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
+                shopSection
             }
+            .listStyle(.insetGrouped)
+            .tint(Selge.Palette.accent)
+            .scrollContentBackground(.hidden)
             .background(Selge.Palette.bg)
             .selgeScreenHeader {
                 Button {
                     showBackpack = true
                 } label: {
                     Image(systemName: "shippingbox")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(Selge.Palette.textSecondary)
-                        .frame(width: 32, height: 32)
-                        .background(Circle().fill(Selge.Palette.surface))
-                        .overlay(Circle().strokeBorder(Selge.Palette.border, lineWidth: 1))
+                        .font(.system(size: 16, weight: .regular))
+                        .foregroundStyle(Selge.Palette.accent)
                 }
                 .accessibilityLabel("背包")
             }
@@ -82,6 +77,49 @@ struct ShopView: View {
         }
     }
 
+    // MARK: - 商品列表（原生行 + 原生按钮）
+
+    private var shopSection: some View {
+        Section {
+            ForEach(items, id: \.id) { item in
+                ShopItemRow(item: item, coin: hero?.coin ?? 0) {
+                    buy(item)
+                }
+            }
+        } footer: {
+            HStack(spacing: 3) {
+                Image(systemName: "circlebadge.2.fill")
+                    .font(.system(size: 10))
+                Text("当前金币 \(hero?.coin ?? 0)")
+                    .monospacedDigit()
+            }
+        }
+    }
+
+    // MARK: - 账户明细（下拉刷新后展示）
+
+    private var ledgerSection: some View {
+        Section {
+            if transactions.isEmpty {
+                Text("暂无收支流水，去完成一次历险吧")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(transactions, id: \.id) { transaction in
+                    LedgerRow(transaction: transaction)
+                }
+                if !ledgerExpanded && store.recentTransactions(limit: 30).count > 8 {
+                    Button("展开全部") {
+                        withAnimation { ledgerExpanded = true }
+                    }
+                    .font(.footnote)
+                }
+            }
+        } header: {
+            Text("账户明细")
+        }
+    }
+
     private func buy(_ item: ShopItem) {
         switch store.purchase(item: item) {
         case .success(let purchased):
@@ -92,9 +130,9 @@ struct ShopView: View {
     }
 }
 
-// MARK: - 商品卡片
+// MARK: - 商品行
 
-private struct ShopItemCard: View {
+private struct ShopItemRow: View {
     let item: ShopItem
     let coin: Int
     let action: () -> Void
@@ -102,88 +140,43 @@ private struct ShopItemCard: View {
     private var affordable: Bool { coin >= item.priceCoin }
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: 12) {
             Text(item.emoji)
-                .font(.system(size: 30))
-                .frame(width: 52, height: 52)
+                .font(.system(size: 26))
+                .frame(width: 44, height: 44)
                 .background(Selge.Palette.bg2)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(item.name)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.system(size: 16, weight: .medium))
                     .foregroundStyle(Selge.Palette.textPrimary)
                 Text(item.itemDescription)
                     .font(.system(size: 12))
-                    .foregroundStyle(Selge.Palette.textTertiary)
+                    .foregroundStyle(.secondary)
                 HStack(spacing: 3) {
                     Image(systemName: "circlebadge.2.fill")
                         .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(Selge.Palette.coinGoldDeep)
                     Text("\(item.priceCoin)")
-                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                        .font(.system(size: 13, weight: .semibold, design: .rounded))
                         .monospacedDigit()
                         .foregroundStyle(Selge.Palette.coinGoldDeep)
                 }
             }
-            Spacer()
-            Button(action: action) {
-                Text("购买")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(affordable ? AnyShapeStyle(Selge.accentGradient) : AnyShapeStyle(Selge.Palette.border))
-                    .clipShape(Capsule())
-            }
-            .disabled(!affordable)
-            .buttonStyle(.plain)
+
+            Spacer(minLength: 8)
+
+            Button("购买", action: action)
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+                .disabled(!affordable)
         }
-        .padding(14)
-        .selgeCard()
+        .padding(.vertical, 2)
     }
 }
 
-// MARK: - 账户明细区块（下拉刷新后展示）
-
-struct LedgerSection: View {
-    @Environment(GameStore.self) private var store
-    @State private var expanded = false
-
-    private var transactions: [AccountTransaction] {
-        store.recentTransactions(limit: expanded ? 30 : 8)
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text("账户明细")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(Selge.Palette.textPrimary)
-                Spacer()
-                if !expanded && store.recentTransactions(limit: 30).count > 8 {
-                    Button("展开") { withAnimation { expanded = true } }
-                        .font(.system(size: 12))
-                        .foregroundStyle(Selge.Palette.accent)
-                }
-            }
-            if transactions.isEmpty {
-                Text("暂无收支流水，去完成一次历险吧")
-                    .font(.system(size: 12))
-                    .foregroundStyle(Selge.Palette.textTertiary)
-                    .padding(.vertical, 6)
-            } else {
-                VStack(spacing: 0) {
-                    ForEach(transactions, id: \.id) { transaction in
-                        LedgerRow(transaction: transaction)
-                    }
-                }
-            }
-        }
-        .padding(14)
-        .selgeCard()
-    }
-}
+// MARK: - 收支流水行
 
 struct LedgerRow: View {
     let transaction: AccountTransaction
@@ -198,29 +191,29 @@ struct LedgerRow: View {
                 .clipShape(Circle())
             VStack(alignment: .leading, spacing: 2) {
                 Text(transaction.reason)
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(Selge.Palette.textPrimary)
                 Text(Self.timeFormatter.string(from: transaction.at))
-                    .font(.system(size: 10, design: .rounded))
-                    .foregroundStyle(Selge.Palette.textTertiary)
+                    .font(.system(size: 11, design: .rounded))
+                    .foregroundStyle(.secondary)
             }
-            Spacer()
+            Spacer(minLength: 8)
             VStack(alignment: .trailing, spacing: 2) {
                 if transaction.xpDelta != 0 {
                     Text("\(transaction.xpDelta > 0 ? "+" : "")\(transaction.xpDelta) xp")
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .font(.system(size: 12, weight: .semibold, design: .rounded))
                         .monospacedDigit()
                         .foregroundStyle(Selge.Palette.accent)
                 }
                 if transaction.coinDelta != 0 {
                     Text("\(transaction.coinDelta > 0 ? "+" : "")\(transaction.coinDelta)")
-                        .font(.system(size: 12, weight: .bold, design: .rounded))
+                        .font(.system(size: 12, weight: .semibold, design: .rounded))
                         .monospacedDigit()
                         .foregroundStyle(transaction.coinDelta >= 0 ? Selge.Palette.coinGoldDeep : Selge.Palette.textSecondary)
                 }
             }
         }
-        .padding(.vertical, 7)
+        .padding(.vertical, 2)
     }
 
     private var icon: String {

@@ -1,8 +1,8 @@
 import SwiftUI
 import SwiftData
 
-/// 历险页：输入标题 + 下拉选择类别 + 确定 → 直接结算写入记录；下方展示全部历险记录
-/// 记录卡片支持左滑显示「修改 / 删除」。
+/// 历险页：输入标题 + 原生下拉选择类别 + 确定 → 直接结算写入记录；下方用原生列表展示全部历险记录。
+/// 记录行使用系统原生左滑操作（修改 / 删除），保证点击可靠。
 struct AdventureView: View {
     @Environment(GameStore.self) private var store
     @Query(sort: [SortDescriptor(\AdventureCategory.sortOrder), SortDescriptor(\AdventureCategory.createdAt)])
@@ -48,16 +48,15 @@ struct AdventureView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    entryCard
-                    recordList
-                }
-                .padding(.horizontal, 16)
-                .padding(.top, 6)
-                .padding(.bottom, 20)
+            List {
+                entrySection
+                confirmSection
+                recordsSection
             }
+            .listStyle(.insetGrouped)
+            .tint(Selge.Palette.accent)
             .scrollDismissesKeyboard(.interactively)
+            .scrollContentBackground(.hidden)
             .background(Selge.Palette.bg)
             .selgeScreenHeader()
             .alert("历险完成", isPresented: Binding(
@@ -112,122 +111,62 @@ struct AdventureView: View {
         return lines.joined(separator: "\n")
     }
 
-    // MARK: - 记录入口卡片
+    // MARK: - 记录一次历险（原生表单：标题 / 下拉类别 / 时长）
 
-    private var entryCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text("记录一次历险")
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(Selge.Palette.textPrimary)
-
-            TextField("这次历险的标题，如：傍晚的公园散步", text: $title)
+    private var entrySection: some View {
+        Section {
+            TextField("历险标题，如：傍晚的公园散步", text: $title)
                 .focused($titleFocused)
                 .submitLabel(.done)
-                .font(.system(size: 14))
-                .padding(.horizontal, 12)
-                .padding(.vertical, 11)
-                .background(Selge.Palette.bg2)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
-            categoryMenu
+            Picker("类别", selection: $selectedCategoryId) {
+                ForEach(categories, id: \.id) { category in
+                    Text("\(category.emoji)  \(category.name)")
+                        .tag(Optional(category.id))
+                }
+            }
 
             if let category = selectedCategory, category.kind == .time {
-                minutesField
+                HStack(spacing: 8) {
+                    Text("时长")
+                    Spacer(minLength: 8)
+                    TextField("0", text: $minutesText, prompt: Text("0"))
+                        .keyboardType(.numberPad)
+                        .multilineTextAlignment(.trailing)
+                        .monospacedDigit()
+                        .frame(width: 56)
+                    Text("分钟")
+                        .foregroundStyle(.secondary)
+                }
             }
+        } header: {
+            Text("记录一次历险")
+        }
+    }
 
-            estimateRow
+    // MARK: - 确定按钮 + 预计收益
 
-            Button(action: submit) {
+    private var confirmSection: some View {
+        Section {
+            Button {
+                submit()
+            } label: {
                 Text("确定")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 13)
-                    .background(canSubmit ? AnyShapeStyle(Selge.accentGradient) : AnyShapeStyle(Selge.Palette.borderStrong))
-                    .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
             .disabled(!canSubmit)
-        }
-        .padding(16)
-        .selgeCard()
-    }
-
-    /// 类别下拉列表（类别数量可随设置增加，避免横向平铺挤压）
-    private var categoryMenu: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("类别")
-                .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(Selge.Palette.textTertiary)
-
-            Menu {
-                ForEach(categories, id: \.id) { category in
-                    Button {
-                        selectedCategoryId = category.id
-                    } label: {
-                        Text("\(category.emoji)  \(category.name)")
-                    }
-                }
-            } label: {
-                HStack(spacing: 8) {
-                    Text(selectedCategory?.emoji ?? "✨")
-                        .font(.system(size: 16))
-                    Text(selectedCategory?.name ?? "选择类别")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(Selge.Palette.textPrimary)
-                    Spacer()
-                    Image(systemName: "chevron.down")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(Selge.Palette.textTertiary)
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 11)
-                .background(Selge.Palette.bg2)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        } footer: {
+            HStack(spacing: 4) {
+                Text("预计")
+                Text("+\(estimatedXP) xp")
+                    .fontWeight(.medium)
+                    .foregroundStyle(Selge.Palette.accent)
+                Text("·")
+                Text("+\(estimatedCoin) 金币")
+                    .fontWeight(.medium)
+                    .foregroundStyle(Selge.Palette.coinGoldDeep)
             }
-        }
-    }
-
-    private var minutesField: some View {
-        HStack(spacing: 10) {
-            Text("时长")
-                .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(Selge.Palette.textTertiary)
-
-            TextField("", text: $minutesText, prompt: Text("0"))
-                .keyboardType(.numberPad)
-                .multilineTextAlignment(.trailing)
-                .font(.system(size: 15, weight: .semibold, design: .rounded))
-                .monospacedDigit()
-                .frame(width: 56)
-
-            Text("分钟")
-                .font(.system(size: 13))
-                .foregroundStyle(Selge.Palette.textSecondary)
-
-            Spacer()
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(Selge.Palette.bg2)
-        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-    }
-
-    private var estimateRow: some View {
-        HStack(spacing: 6) {
-            Text("预计")
-                .font(.system(size: 11))
-                .foregroundStyle(Selge.Palette.textTertiary)
-            Text("+\(estimatedXP) xp")
-                .font(.system(size: 13, weight: .semibold, design: .rounded))
-                .monospacedDigit()
-                .foregroundStyle(Selge.Palette.accent)
-            Text("·")
-                .foregroundStyle(Selge.Palette.textTertiary)
-            Text("+\(estimatedCoin) 金币")
-                .font(.system(size: 13, weight: .semibold, design: .rounded))
-                .monospacedDigit()
-                .foregroundStyle(Selge.Palette.coinGoldDeep)
-            Spacer()
         }
     }
 
@@ -240,137 +179,54 @@ struct AdventureView: View {
         titleFocused = false
     }
 
-    // MARK: - 历险记录
+    // MARK: - 历险记录（原生列表 + 原生左滑操作）
 
-    private var recordList: some View {
-        VStack(alignment: .leading, spacing: 10) {
+    private var recordsSection: some View {
+        Section {
+            if records.isEmpty {
+                VStack(spacing: 6) {
+                    Image(systemName: "figure.hiking")
+                        .font(.system(size: 22, weight: .light))
+                        .foregroundStyle(.secondary)
+                    Text("还没有历险记录，写下第一件吧")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+            } else {
+                ForEach(records, id: \.id) { record in
+                    RecordRow(record: record)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                pendingDelete = record
+                            } label: {
+                                Label("删除", systemImage: "trash")
+                            }
+
+                            Button {
+                                editingRecord = record
+                            } label: {
+                                Label("修改", systemImage: "pencil")
+                            }
+                            .tint(Selge.Palette.accent)
+                        }
+                }
+            }
+        } header: {
             HStack {
                 Text("历险记录")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Selge.Palette.textSecondary)
                 Spacer()
                 if !records.isEmpty {
                     Text("\(records.count) 条")
-                        .font(.system(size: 11, design: .rounded))
                         .monospacedDigit()
-                        .foregroundStyle(Selge.Palette.textTertiary)
-                }
-            }
-
-            if records.isEmpty {
-                VStack(spacing: 8) {
-                    Image(systemName: "figure.hiking")
-                        .font(.system(size: 26, weight: .light))
-                        .foregroundStyle(Selge.Palette.textTertiary)
-                    Text("还没有历险记录，写下第一件吧")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Selge.Palette.textTertiary)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 34)
-                .selgeCard()
-            } else {
-                LazyVStack(spacing: 10) {
-                    ForEach(records, id: \.id) { record in
-                        SwipeableRecordRow(
-                            record: record,
-                            onEdit: { editingRecord = record },
-                            onDelete: { pendingDelete = record }
-                        )
-                    }
                 }
             }
         }
     }
 }
 
-// MARK: - 可左滑操作的单条记录
-
-private struct SwipeableRecordRow: View {
-    let record: AdventureRecord
-    let onEdit: () -> Void
-    let onDelete: () -> Void
-
-    @State private var offset: CGFloat = 0
-    @State private var revealActions = false
-
-    private let actionWidth: CGFloat = 64
-    private let spacing: CGFloat = 8
-    private var revealedWidth: CGFloat { actionWidth * 2 + spacing }
-
-    var body: some View {
-        ZStack(alignment: .trailing) {
-            actionsBackground
-            RecordRow(record: record)
-                .offset(x: offset)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    if revealActions { close() }
-                }
-                .simultaneousGesture(dragGesture)
-        }
-    }
-
-    private var actionsBackground: some View {
-        HStack(spacing: spacing) {
-            actionButton(title: "修改", icon: "pencil", color: Selge.Palette.accent, action: onEdit)
-            actionButton(title: "删除", icon: "trash", color: Color(hex: 0xc25a4a), action: onDelete)
-        }
-        .frame(height: 64)
-    }
-
-    private func actionButton(title: String, icon: String, color: Color, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            VStack(spacing: 4) {
-                Image(systemName: icon)
-                    .font(.system(size: 14, weight: .semibold))
-                Text(title)
-                    .font(.system(size: 11, weight: .medium))
-            }
-            .foregroundStyle(.white)
-            .frame(width: actionWidth, height: 64)
-            .background(color)
-            .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var dragGesture: some Gesture {
-        DragGesture(minimumDistance: 12)
-            .onChanged { value in
-                // 只响应横向滑动，保证竖向滚动列表不受影响
-                guard abs(value.translation.width) > abs(value.translation.height) else { return }
-                let base = revealActions ? -revealedWidth : 0
-                let proposed = base + value.translation.width
-                offset = min(0, max(-revealedWidth - 14, proposed))
-            }
-            .onEnded { value in
-                let base = revealActions ? -revealedWidth : 0
-                let final = base + value.translation.width
-                if final < -revealedWidth * 0.45 {
-                    open()
-                } else {
-                    close()
-                }
-            }
-    }
-
-    private func open() {
-        withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
-            offset = -revealedWidth
-            revealActions = true
-        }
-    }
-
-    private func close() {
-        withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
-            offset = 0
-            revealActions = false
-        }
-    }
-}
-
-// MARK: - 单条历险记录内容
+// MARK: - 单条历险记录内容（原生列表行样式）
 
 private struct RecordRow: View {
     let record: AdventureRecord
@@ -391,40 +247,39 @@ private struct RecordRow: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: 12) {
+        HStack(spacing: 12) {
             Text(record.emoji)
                 .font(.system(size: 20))
-                .frame(width: 40, height: 40)
+                .frame(width: 36, height: 36)
                 .background(Selge.Palette.accentSoftBg)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(titleText)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.system(size: 15, weight: .medium))
                     .foregroundStyle(Selge.Palette.textPrimary)
                     .lineLimit(1)
                 Text(metaText)
-                    .font(.system(size: 11, design: .rounded))
+                    .font(.system(size: 12, design: .rounded))
                     .monospacedDigit()
-                    .foregroundStyle(Selge.Palette.textTertiary)
+                    .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
 
             Spacer(minLength: 8)
 
-            VStack(alignment: .trailing, spacing: 3) {
+            VStack(alignment: .trailing, spacing: 2) {
                 Text("+\(record.xp) xp")
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .monospacedDigit()
                     .foregroundStyle(Selge.Palette.accent)
-                Text("+\(record.coin) 金币")
+                Text("+\(record.coin)")
                     .font(.system(size: 11, design: .rounded))
                     .monospacedDigit()
                     .foregroundStyle(Selge.Palette.coinGoldDeep)
             }
         }
-        .padding(12)
-        .selgeCard()
+        .padding(.vertical, 2)
     }
 
     private static let dateFormatter: DateFormatter = {
@@ -468,37 +323,30 @@ private struct RecordEditorView: View {
 
                 if record.kind == .time {
                     Section("时长") {
-                        HStack {
-                            Text("分钟")
-                            Spacer()
-                            TextField("0", text: $minutesText)
+                        HStack(spacing: 8) {
+                            Text("时长")
+                            Spacer(minLength: 8)
+                            TextField("0", text: $minutesText, prompt: Text("0"))
                                 .keyboardType(.numberPad)
                                 .multilineTextAlignment(.trailing)
                                 .monospacedDigit()
-                                .frame(width: 80)
+                                .frame(width: 56)
+                            Text("分钟")
+                                .foregroundStyle(.secondary)
                         }
                     }
                 }
 
                 Section {
-                    HStack {
-                        Text("经验")
-                        Spacer()
-                        Text("+\(previewXP) xp")
-                            .monospacedDigit()
-                            .foregroundStyle(Selge.Palette.accent)
-                    }
-                    HStack {
-                        Text("金币")
-                        Spacer()
-                        Text("+\(previewCoin)")
-                            .monospacedDigit()
-                            .foregroundStyle(Selge.Palette.coinGoldDeep)
-                    }
+                    LabeledContent("经验", value: "+\(previewXP) xp")
+                        .monospacedDigit()
+                    LabeledContent("金币", value: "+\(previewCoin)")
+                        .monospacedDigit()
                 } footer: {
                     Text("保存后按类别规则重新计算，并同步调整账户总经验、金币与流水")
                 }
             }
+            .tint(Selge.Palette.accent)
             .navigationTitle("修改历险")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

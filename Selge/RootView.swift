@@ -69,11 +69,8 @@ struct ScreenHeaderModifier<Trailing: View>: ViewModifier {
                         showSettings = true
                     } label: {
                         Image(systemName: "gearshape")
-                            .font(.system(size: 15, weight: .medium))
-                            .foregroundStyle(Selge.Palette.textSecondary)
-                            .frame(width: 32, height: 32)
-                            .background(Circle().fill(Selge.Palette.surface))
-                            .overlay(Circle().strokeBorder(Selge.Palette.border, lineWidth: 1))
+                            .font(.system(size: 17, weight: .regular))
+                            .foregroundStyle(Selge.Palette.accent)
                     }
                     .accessibilityLabel("设置")
                 }
