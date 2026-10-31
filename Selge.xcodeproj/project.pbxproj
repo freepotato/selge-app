@@ -51,6 +51,7 @@
 		95E1B6F56DD09454EDC304DA /* AdventureSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureSessionView.swift; sourceTree = "<group>"; };
 		9EE38D72161649F7D7324922 /* HeatmapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapView.swift; sourceTree = "<group>"; };
 		9F059B7FFFC916C02B2CF888 /* Selge.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Selge.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A781F5563038F86BB84CFB40 /* SelgeDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SelgeDebug.entitlements; sourceTree = "<group>"; };
 		AC351A2640FA71AFC748230E /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		AD4A4AE1C8B716DC663F316E /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		B3FC70DC422F86AEF3AE8AF1 /* AdventureKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureKind.swift; sourceTree = "<group>"; };
@@ -150,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				14DA0911D06DCD479A24172A /* Selge.entitlements */,
+				A781F5563038F86BB84CFB40 /* SelgeDebug.entitlements */,
 			);
 			path = Entitlements;
 			sourceTree = "<group>";
@@ -376,7 +378,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Selge/Entitlements/Selge.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Selge/Entitlements/SelgeDebug.entitlements;
 				INFOPLIST_FILE = Selge/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.freepotato.selge;
 				TARGETED_DEVICE_FAMILY = 1;

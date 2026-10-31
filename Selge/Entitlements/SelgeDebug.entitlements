@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<!-- Debug 真机运行（个人免费团队签名）使用：不含 iCloud 声明，
+     避免免费团队无法生成描述文件。CloudKit 能力见 Selge.entitlements（Release）。 -->
+<dict/>
+</plist>
