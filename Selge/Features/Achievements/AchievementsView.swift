@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-/// 成就页：原生分组列表 —— 顶部分类分段控件，下面逐行展示徽章
+/// 成就页：顶部分类分段控件，同时支持左右滑动切换类别；下方逐行展示徽章（静态展示，无动画）
 struct AchievementsView: View {
     @Environment(GameStore.self) private var store
     @Query private var records: [AdventureRecord]
@@ -18,10 +18,10 @@ struct AchievementsView: View {
     }
 
     /// 排序规则：已解锁在前，解锁时间越新越靠前；未解锁按达成门槛由易到难
-    private var shownDefs: [AchievementDef] {
-        let defs = selectedGroup == "all"
+    private func defs(for group: String) -> [AchievementDef] {
+        let defs = group == "all"
             ? AchievementCatalog.all
-            : AchievementCatalog.all.filter { $0.group == selectedGroup }
+            : AchievementCatalog.all.filter { $0.group == group }
         return defs.sorted { lhs, rhs in
             switch (unlockedMap[lhs.id], unlockedMap[rhs.id]) {
             case let (left?, right?):
@@ -40,60 +40,62 @@ struct AchievementsView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    Picker("分类", selection: $selectedGroup) {
-                        ForEach(AchievementCatalog.groups, id: \.key) { group in
-                            Text(group.label).tag(group.key)
-                        }
+            VStack(spacing: 8) {
+                Picker("分类", selection: $selectedGroup) {
+                    ForEach(AchievementCatalog.groups, id: \.key) { group in
+                        Text(group.label).tag(group.key)
                     }
-                    .pickerStyle(.segmented)
-                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                 }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 16)
 
-                Section {
-                    ForEach(shownDefs) { def in
-                        AchievementRow(
-                            def: def,
-                            unlockedAt: unlockedMap[def.id],
-                            currentCount: counts[def.group] ?? 0
-                        )
+                TabView(selection: $selectedGroup) {
+                    ForEach(AchievementCatalog.groups, id: \.key) { group in
+                        page(for: group.key)
+                            .tag(group.key)
                     }
-                } header: {
-                    Text("徽章")
                 }
+                .tabViewStyle(.page(indexDisplayMode: .never))
             }
-            .listStyle(.insetGrouped)
-            .tint(Selge.Palette.accent)
-            .scrollContentBackground(.hidden)
+            .padding(.top, 6)
             .background(Selge.Palette.bg)
             .selgeScreenHeader()
         }
+    }
+
+    private func page(for group: String) -> some View {
+        List {
+            Section {
+                ForEach(defs(for: group)) { def in
+                    AchievementRow(
+                        def: def,
+                        unlockedAt: unlockedMap[def.id],
+                        currentCount: counts[def.group] ?? 0
+                    )
+                }
+            } header: {
+                Text("徽章")
+            }
+        }
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(Selge.Palette.bg)
     }
 }
 
 // MARK: - 单个成就行
 
-/// 圆形 3D 徽章（质感参考 Apple 健身徽章）：手指左右摆动旋转，
-/// 松手后带回弹惯性的钟摆动画；旋转角度受限，不可翻至背面。
+/// 圆形 3D 徽章（静态展示，参考 Apple 健身徽章质感）
 private struct AchievementRow: View {
     let def: AchievementDef
     let unlockedAt: Date?
     let currentCount: Int
-
-    @State private var swingAngle: Double = 0
 
     private var isUnlocked: Bool { unlockedAt != nil }
 
     var body: some View {
         HStack(spacing: 12) {
             BadgeArt(icon: def.icon, unlocked: isUnlocked, size: 46)
-                .rotation3DEffect(
-                    .degrees(swingAngle),
-                    axis: (x: 0, y: 1, z: 0),
-                    perspective: 0.8
-                )
-                .gesture(swingGesture)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(def.name)
@@ -121,23 +123,6 @@ private struct AchievementRow: View {
         }
         .padding(.vertical, 2)
         .opacity(isUnlocked ? 1 : 0.85)
-    }
-
-    // MARK: 摆动手势（角度受限 + 惯性回弹）
-
-    private var swingGesture: some Gesture {
-        DragGesture(minimumDistance: 1)
-            .onChanged { value in
-                // 限制最大 ±45°，转动幅度更克制
-                let target = Double(value.translation.width) * 0.5
-                swingAngle = min(max(target, -45), 45)
-            }
-            .onEnded { _ in
-                // 松手后钟摆式回弹：阻尼更大、节奏更慢，整体手感更沉
-                withAnimation(.spring(response: 1.15, dampingFraction: 0.72, blendDuration: 0.45)) {
-                    swingAngle = 0
-                }
-            }
     }
 
     private static let dateFormatter: DateFormatter = {
