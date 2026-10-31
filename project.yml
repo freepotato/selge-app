@@ -31,6 +31,11 @@ targets:
         TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+      configs:
+        # CloudKit 仅在 Release（付费签名/Archive/TestFlight）构建中启用，
+        # Debug 真机运行（免费个人团队签名）走纯本地存储
+        Release:
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: SELGE_CLOUDKIT
     info:
       path: Selge/Info.plist
       properties:
@@ -40,6 +45,9 @@ targets:
         UILaunchScreen:
           UIColorName: LaunchBackground
           UIImageName: LaunchLogo
+        # CloudKit 推送同步所需的后台模式（仅 CloudKit 启用时实际生效）
+        UIBackgroundModes:
+          - remote-notification
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         ITSAppUsesNonExemptEncryption: false

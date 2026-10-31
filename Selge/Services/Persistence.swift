@@ -32,6 +32,12 @@ enum Persistence {
         ])
 
         // 优先：CloudKit 私有容器（iOS 与后续 Web 端 CloudKit JS 共用同一数据集）
+        // 仅在 SELGE_CLOUDKIT 编译条件的构建中尝试（Release 配置）。
+        // 运行时无法可靠探测签名是否包含 iCloud 能力：已登录 iCloud 的设备上
+        // ubiquityIdentityToken 可能为非 nil，而缺少能力时 CloudKit 会在
+        // 初始化时直接崩溃（CKContainer.m 断言），因此用编译期开关兜底，
+        // 免费个人团队签名（Debug 真机）绝不触碰 CloudKit。
+        #if SELGE_CLOUDKIT
         if cloudKitAvailable {
             do {
                 let cloudConfig = ModelConfiguration(
@@ -47,6 +53,7 @@ enum Persistence {
                 #endif
             }
         }
+        #endif
 
         // 降级：纯本地存储（无 iCloud 能力时仍可完整使用）
         let localConfig = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)

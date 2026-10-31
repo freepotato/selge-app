@@ -365,6 +365,7 @@
 				CODE_SIGN_ENTITLEMENTS = Selge/Entitlements/Selge.entitlements;
 				INFOPLIST_FILE = Selge/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.freepotato.selge;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SELGE_CLOUDKIT;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
