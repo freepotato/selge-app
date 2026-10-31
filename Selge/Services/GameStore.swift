@@ -164,6 +164,7 @@ final class GameStore {
             ? "\(category.name) · \(Int(minutes.rounded())) 分钟"
             : "\(category.name) · 单次"
         transaction.dayKey = record.dayKey
+        transaction.relatedRecordId = record.id
         context.insert(transaction)
 
         // 4. 成就检测
@@ -183,6 +184,83 @@ final class GameStore {
             streak: hero?.streak ?? 0,
             newAchievements: newAchievements
         )
+    }
+
+    // MARK: - 历险记录编辑 / 删除
+
+    /// 按类别规则重新计算某条记录的经验（编辑时预览、保存时共用）
+    func recalculatedXP(for record: AdventureRecord, minutes: Double) -> Int {
+        let category = categories().first { $0.id == record.categoryId }
+        switch record.kind {
+        case .time:
+            let rate = category?.xpPerMinute
+                ?? (record.minutes > 0 ? Double(record.xp) / record.minutes : 0)
+            return GameRules.xp(minutes: max(0, minutes), perMinute: rate)
+        case .once:
+            return category?.baseXP ?? record.xp
+        }
+    }
+
+    /// 修改历险记录：标题、记录时间、时长（计时型），并按最新规则重算经验与金币，
+    /// 同步扣补勇者总经验/金币与对应的账户流水。
+    func updateRecord(_ record: AdventureRecord, title: String, endedAt: Date, minutes: Double) {
+        let newMinutes = record.kind == .time ? max(0, minutes) : 0
+        let newXP = recalculatedXP(for: record, minutes: newMinutes)
+        let newCoin = GameRules.coin(forXP: newXP, multiplier: config.coinMultiplier)
+        let deltaXP = newXP - record.xp
+        let deltaCoin = newCoin - record.coin
+
+        if let hero = hero() {
+            hero.xp = max(0, hero.xp + deltaXP)
+            hero.coin = max(0, hero.coin + deltaCoin)
+            hero.updatedAt = Date.now
+        }
+
+        let cleanTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        record.note = cleanTitle.isEmpty ? nil : cleanTitle
+        record.minutes = newMinutes
+        record.xp = newXP
+        record.coin = newCoin
+        record.endedAt = endedAt
+        record.dayKey = GameRules.dayKey(for: endedAt)
+        record.startedAt = record.kind == .time
+            ? endedAt.addingTimeInterval(-newMinutes * 60)
+            : nil
+
+        for transaction in transactions(for: record.id) {
+            transaction.at = endedAt
+            transaction.xpDelta = newXP
+            transaction.coinDelta = newCoin
+            transaction.dayKey = record.dayKey
+            transaction.reason = reasonText(for: record)
+        }
+
+        try? context.save()
+    }
+
+    /// 删除历险记录：撤销该记录带来的经验/金币，并删除关联流水
+    func deleteRecord(_ record: AdventureRecord) {
+        if let hero = hero() {
+            hero.xp = max(0, hero.xp - record.xp)
+            hero.coin = max(0, hero.coin - record.coin)
+            hero.updatedAt = Date.now
+        }
+        for transaction in transactions(for: record.id) {
+            context.delete(transaction)
+        }
+        context.delete(record)
+        try? context.save()
+    }
+
+    private func transactions(for recordId: UUID) -> [AccountTransaction] {
+        let fetch = FetchDescriptor<AccountTransaction>()
+        return ((try? context.fetch(fetch)) ?? []).filter { $0.relatedRecordId == recordId }
+    }
+
+    private func reasonText(for record: AdventureRecord) -> String {
+        record.kind == .time
+            ? "\(record.categoryName) · \(Int(record.minutes.rounded())) 分钟"
+            : "\(record.categoryName) · 单次"
     }
 
     // MARK: - 成就

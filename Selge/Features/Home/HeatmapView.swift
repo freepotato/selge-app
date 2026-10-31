@@ -12,6 +12,13 @@ struct HeatmapView: View {
     private static let weekdayLabelWidth: CGFloat = 20
     private static let monthLabelHeight: CGFloat = 15
 
+    /// 按可用宽度计算热力图自然高度（正方形方块 + 月份/星期标注）
+    static func intrinsicHeight(containerWidth: CGFloat) -> CGFloat {
+        let availableWidth = max(0, containerWidth - weekdayLabelWidth)
+        let cell = max(4, (availableWidth - gap * CGFloat(weekColumnCount - 1)) / CGFloat(weekColumnCount))
+        return monthLabelHeight + cell * 7 + gap * 6
+    }
+
     @State private var touched: DayCell?
 
     var body: some View {

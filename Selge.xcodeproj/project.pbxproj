@@ -269,6 +269,7 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					1E94932D15EB6EF2182C0610 = {
+						DevelopmentTeam = JABSPG7D6F;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -373,6 +374,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Selge/Entitlements/Selge.entitlements;
+				DEVELOPMENT_TEAM = JABSPG7D6F;
 				INFOPLIST_FILE = Selge/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.freepotato.selge;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SELGE_CLOUDKIT;
@@ -387,6 +389,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Selge/Entitlements/SelgeDebug.entitlements;
+				DEVELOPMENT_TEAM = JABSPG7D6F;
 				INFOPLIST_FILE = Selge/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.freepotato.selge;
 				TARGETED_DEVICE_FAMILY = 1;

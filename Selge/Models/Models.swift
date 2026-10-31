@@ -116,6 +116,8 @@ final class AccountTransaction {
     /// 说明，如 "散步 · 25 分钟"、"购买 电影票"
     var reason: String = ""
     var dayKey: String = ""
+    /// 关联的历险记录 ID（编辑/删除记录时同步调整对应流水）
+    var relatedRecordId: UUID?
 
     init() {}
 }

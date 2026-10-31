@@ -184,8 +184,8 @@ struct BadgeCard: View {
                 swingAngle = min(max(target, -72), 72)
             }
             .onEnded { _ in
-                // 松手后钟摆式回弹（低阻尼弹簧带惯性摆动）
-                withAnimation(.spring(response: 0.6, dampingFraction: 0.28, blendDuration: 0.2)) {
+                // 松手后钟摆式回弹（低阻尼弹簧，节奏放缓保留惯性摆动）
+                withAnimation(.spring(response: 0.95, dampingFraction: 0.32, blendDuration: 0.35)) {
                     swingAngle = 0
                 }
             }

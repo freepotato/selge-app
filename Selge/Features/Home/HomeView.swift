@@ -11,11 +11,14 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-            homeContent
-                .padding(.horizontal, 16)
-                .padding(.bottom, 8)
-                .selgeScreenHeader()
-                .background(Selge.Palette.bg)
+            GeometryReader { proxy in
+                homeContent(availableWidth: proxy.size.width - 32)
+                    .frame(maxHeight: .infinity, alignment: .top)
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+            .selgeScreenHeader()
+            .background(Selge.Palette.bg)
         }
     }
 
@@ -24,26 +27,27 @@ struct HomeView: View {
         GameRules.progress(forXP: hero?.xp ?? 0)
     }
 
-    private var homeContent: some View {
+    private func homeContent(availableWidth: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             headerBar
             statCards
-            heatmapCard
+            heatmapCard(width: availableWidth)
         }
         .padding(.top, 4)
     }
 
-    // MARK: 历险热力图（填满剩余高度，无标题，仅图 + 图例）
+    // MARK: 历险热力图（按内容自然高度展示，无标题，仅图 + 图例）
 
-    private var heatmapCard: some View {
-        VStack(spacing: 10) {
+    private func heatmapCard(width: CGFloat) -> some View {
+        // 卡片左右各有 12 的内边距，热力图按可用宽度自然铺满
+        let gridWidth = max(0, width - 24)
+        return VStack(spacing: 10) {
             HeatmapView(records: records)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(height: HeatmapView.intrinsicHeight(containerWidth: gridWidth))
             heatmapLegend
         }
         .padding(12)
         .selgeCard()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var heatmapLegend: some View {

@@ -31,6 +31,8 @@ targets:
         TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        # 本地真机调试使用的开发团队（个人团队）；加入付费开发者计划后替换此值即可
+        DEVELOPMENT_TEAM: JABSPG7D6F
       configs:
         # Debug：空声明文件，个人免费团队签名即可真机安装（纯本地存储）
         Debug:
