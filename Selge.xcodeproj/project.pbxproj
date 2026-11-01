@@ -8,9 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		02A74EC15EBFE36CB5141772 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1B34D225A944B6647FDAE505 /* OFL.txt */; };
+		049B394CEF8AEC7D5AEF0E0C /* AdventureComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A81C3DDB1BF78652773A1C /* AdventureComposerView.swift */; };
 		1C5FEC338D9403BEE05C7E14 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC351A2640FA71AFC748230E /* RootView.swift */; };
 		1E0A578E94833D0D8557C6D5 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4A4AE1C8B716DC663F316E /* Persistence.swift */; };
 		26742CFBA63B587E5AC5EC0E /* ShopCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC5BBC696FAE9EEF952FBF1 /* ShopCatalog.swift */; };
+		297CA2EBA9A9B8FB34D2E328 /* RecordComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE316AEA35F76B672C7DB2D /* RecordComponents.swift */; };
 		31BE72F4C288870EC1D6041D /* ChangelogParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B03ED788E00D8E6FEC17FA /* ChangelogParser.swift */; };
 		33D6E5A6DEA0BE46878A3EC4 /* HeatmapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE38D72161649F7D7324922 /* HeatmapView.swift */; };
 		3CB99058D574C4E0A700F831 /* VersionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFFCCFE93927238CE100DB5 /* VersionInfo.swift */; };
@@ -21,7 +23,6 @@
 		6415648E239D2113B7AF2227 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F3A1903E1FB44B1960275E2 /* Assets.xcassets */; };
 		72D6213BE2DF2E2D095DBABD /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16208DD987A945E68A9D61AA /* Models.swift */; };
 		73E7E881F167A383801C9098 /* SelgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A31B4F33570071F5D59A67 /* SelgeApp.swift */; };
-		7C997A305B7ECFAE73F2B6C2 /* AdventureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9758118565390D6E89B1B38 /* AdventureView.swift */; };
 		9635C68694E8DFA24B251005 /* GameRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6266C99BA2C7A3D7334BE384 /* GameRules.swift */; };
 		96C0AFC697F536EBEB953F0C /* SelgeSerif-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4A990B625EADC3A290D27E87 /* SelgeSerif-Bold.ttf */; };
 		A0F850C3965C5D6BC10E6E5F /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8BF480582231CCF3CE183 /* AppConfig.swift */; };
@@ -51,6 +52,7 @@
 		778FC391B9C064CF4F1F52EB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		7F992BDF6F20F07441188AFF /* ShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopView.swift; sourceTree = "<group>"; };
 		8D127E477211E677B40BD0F3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		90A81C3DDB1BF78652773A1C /* AdventureComposerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureComposerView.swift; sourceTree = "<group>"; };
 		925F65CD86AED604E3A28875 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		93AF395C2A948FAFCBF7A5FB /* SelgeSerif-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SelgeSerif-Regular.ttf"; sourceTree = "<group>"; };
 		9EE38D72161649F7D7324922 /* HeatmapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapView.swift; sourceTree = "<group>"; };
@@ -63,12 +65,12 @@
 		C519DE8C820238759BCCA655 /* ChangelogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogView.swift; sourceTree = "<group>"; };
 		C6AAE60A2A04BDC416AFC808 /* GameStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStore.swift; sourceTree = "<group>"; };
 		E1A31B4F33570071F5D59A67 /* SelgeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelgeApp.swift; sourceTree = "<group>"; };
-		E9758118565390D6E89B1B38 /* AdventureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureView.swift; sourceTree = "<group>"; };
 		EAFFCCFE93927238CE100DB5 /* VersionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionInfo.swift; sourceTree = "<group>"; };
 		F1A576E21B20FC46E25A6D17 /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
 		F71C285A71DC0404C15D26C1 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 		F92DE6EC52F7BD03BAF6B750 /* AchievementCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementCatalog.swift; sourceTree = "<group>"; };
 		FAC5BBC696FAE9EEF952FBF1 /* ShopCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCatalog.swift; sourceTree = "<group>"; };
+		FCE316AEA35F76B672C7DB2D /* RecordComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordComponents.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -128,7 +130,8 @@
 		3FBECC67C87AE1E24113C5CC /* Adventure */ = {
 			isa = PBXGroup;
 			children = (
-				E9758118565390D6E89B1B38 /* AdventureView.swift */,
+				90A81C3DDB1BF78652773A1C /* AdventureComposerView.swift */,
+				FCE316AEA35F76B672C7DB2D /* RecordComponents.swift */,
 			);
 			path = Adventure;
 			sourceTree = "<group>";
@@ -315,8 +318,8 @@
 			files = (
 				BE07246086B25C6A8DC235E0 /* AchievementCatalog.swift in Sources */,
 				EF94904610FA449DF1426B3A /* AchievementsView.swift in Sources */,
+				049B394CEF8AEC7D5AEF0E0C /* AdventureComposerView.swift in Sources */,
 				B44546CE4ED4CAAE75B9D0EB /* AdventureKind.swift in Sources */,
-				7C997A305B7ECFAE73F2B6C2 /* AdventureView.swift in Sources */,
 				A0F850C3965C5D6BC10E6E5F /* AppConfig.swift in Sources */,
 				416F77E1FD671A7B10D115D7 /* BackpackView.swift in Sources */,
 				31BE72F4C288870EC1D6041D /* ChangelogParser.swift in Sources */,
@@ -328,6 +331,7 @@
 				BA1904B8F88C093C258B31F7 /* HomeView.swift in Sources */,
 				72D6213BE2DF2E2D095DBABD /* Models.swift in Sources */,
 				1E0A578E94833D0D8557C6D5 /* Persistence.swift in Sources */,
+				297CA2EBA9A9B8FB34D2E328 /* RecordComponents.swift in Sources */,
 				1C5FEC338D9403BEE05C7E14 /* RootView.swift in Sources */,
 				73E7E881F167A383801C9098 /* SelgeApp.swift in Sources */,
 				EF68B3B2F34F0D1C4226740C /* SelgeTheme.swift in Sources */,

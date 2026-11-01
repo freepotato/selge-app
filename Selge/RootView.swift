@@ -1,15 +1,14 @@
 import SwiftUI
 
-/// 全局框架：底部 4 个一级页面（主页 / 历险 / 商店 / 成就），
-/// 设置页仅通过各页面右上角齿轮入口进入。
+/// 全局框架：底部 3 个一级页面（主页 / 商店 / 成就），
+/// 设置页仅通过右上角齿轮入口进入。历险通过主页右下角 + 按钮添加。
 struct RootView: View {
     enum Tab: Int, CaseIterable {
-        case home, adventure, shop, achievements
+        case home, shop, achievements
 
         var title: String {
             switch self {
             case .home: return "主页"
-            case .adventure: return "历险"
             case .shop: return "商店"
             case .achievements: return "成就"
             }
@@ -18,7 +17,6 @@ struct RootView: View {
         var icon: String {
             switch self {
             case .home: return "house.fill"
-            case .adventure: return "figure.hiking"
             case .shop: return "cart.fill"
             case .achievements: return "rosette"
             }
@@ -32,10 +30,6 @@ struct RootView: View {
             HomeView()
                 .tabItem { Label(Tab.home.title, systemImage: Tab.home.icon) }
                 .tag(Tab.home)
-
-            AdventureView()
-                .tabItem { Label(Tab.adventure.title, systemImage: Tab.adventure.icon) }
-                .tag(Tab.adventure)
 
             ShopView()
                 .tabItem { Label(Tab.shop.title, systemImage: Tab.shop.icon) }

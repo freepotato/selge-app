@@ -18,11 +18,12 @@ struct CoinText: View {
     }
 }
 
-/// 点击输入框以外的区域收起键盘。
-/// 用 UIKit 层的点击识别（cancelsTouchesInView = false）实现，
-/// 避免在 SwiftUI 列表上挂手势导致行内按钮 / 下拉菜单点不动。
-struct DismissKeyboardOnTapOutside: UIViewRepresentable {
-    func makeCoordinator() -> Coordinator { Coordinator() }
+/// 监听窗口级点击并回调点击位置，不拦截任何原有手势，
+/// 用于「点击某区域之外时执行动作」这类需求（挂在 SwiftUI 列表上会破坏行内按钮）。
+struct WindowTapObserver: UIViewRepresentable {
+    let onTap: (CGPoint) -> Void
+
+    func makeCoordinator() -> Coordinator { Coordinator(onTap: onTap) }
 
     func makeUIView(context: Context) -> UIView {
         let view = UIView(frame: .zero)
@@ -31,10 +32,17 @@ struct DismissKeyboardOnTapOutside: UIViewRepresentable {
         return view
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {}
+    func updateUIView(_ uiView: UIView, context: Context) {
+        context.coordinator.onTap = onTap
+    }
 
     final class Coordinator: NSObject, UIGestureRecognizerDelegate {
+        var onTap: (CGPoint) -> Void
         private weak var recognizer: UITapGestureRecognizer?
+
+        init(onTap: @escaping (CGPoint) -> Void) {
+            self.onTap = onTap
+        }
 
         func install(on view: UIView) {
             DispatchQueue.main.async { [weak view] in
@@ -47,11 +55,8 @@ struct DismissKeyboardOnTapOutside: UIViewRepresentable {
             }
         }
 
-        @objc private func handleTap() {
-            UIApplication.shared.sendAction(
-                #selector(UIResponder.resignFirstResponder),
-                to: nil, from: nil, for: nil
-            )
+        @objc private func handleTap(_ gesture: UITapGestureRecognizer) {
+            onTap(gesture.location(in: gesture.view))
         }
 
         /// 点在输入框上时不触发，避免刚聚焦就被收起
@@ -69,7 +74,15 @@ struct DismissKeyboardOnTapOutside: UIViewRepresentable {
 extension View {
     /// 点击非输入区域自动收起键盘
     func dismissKeyboardOnTapOutside() -> some View {
-        background(DismissKeyboardOnTapOutside().frame(width: 0, height: 0))
+        background(
+            WindowTapObserver { _ in
+                UIApplication.shared.sendAction(
+                    #selector(UIResponder.resignFirstResponder),
+                    to: nil, from: nil, for: nil
+                )
+            }
+            .frame(width: 0, height: 0)
+        )
     }
 }
 
