@@ -46,7 +46,6 @@ struct AdventureView: View {
 
     private var canSubmit: Bool {
         guard let category = selectedCategory else { return false }
-        guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
         if category.kind == .time { return minutes > 0 }
         return true
     }
@@ -55,7 +54,6 @@ struct AdventureView: View {
         NavigationStack {
             List {
                 entrySection
-                confirmSection
                 recordsSection
             }
             .listStyle(.insetGrouped)
@@ -63,8 +61,11 @@ struct AdventureView: View {
             .scrollDismissesKeyboard(.interactively)
             .scrollContentBackground(.hidden)
             .background(Selge.Palette.bg)
-            // 点击任意其他区域收起键盘（不干扰行内按钮与下拉菜单）
-            .simultaneousGesture(TapGesture().onEnded { focusedField = nil })
+            // 点击输入框以外的区域收起键盘（UIKit 层识别，不影响行内按钮与下拉菜单）
+            .dismissKeyboardOnTapOutside()
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                confirmBar
+            }
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
@@ -128,7 +129,7 @@ struct AdventureView: View {
 
     private var entrySection: some View {
         Section {
-            TextField("历险标题，如：傍晚的公园散步", text: $title)
+            TextField("标题（可选），如：傍晚的公园散步", text: $title)
                 .focused($focusedField, equals: .title)
                 .submitLabel(.done)
 
@@ -138,6 +139,7 @@ struct AdventureView: View {
                         .tag(Optional(category.id))
                 }
             }
+            .pickerStyle(.menu)
 
             if let category = selectedCategory, category.kind == .time {
                 HStack(spacing: 8) {
@@ -158,29 +160,42 @@ struct AdventureView: View {
         }
     }
 
-    // MARK: - 确定按钮 + 预计收益
+    // MARK: - 确定按钮 + 预计收益（固定在键盘上方，始终可点）
 
-    private var confirmSection: some View {
-        Section {
-            Button {
-                submit()
-            } label: {
-                Text("确定")
-                    .fontWeight(.semibold)
-                    .frame(maxWidth: .infinity, alignment: .center)
-            }
-            .disabled(!canSubmit)
-        } footer: {
+    private var confirmBar: some View {
+        VStack(spacing: 8) {
             HStack(spacing: 4) {
                 Text("预计")
+                    .foregroundStyle(.secondary)
                 Text("+\(estimatedXP) xp")
                     .fontWeight(.medium)
                     .foregroundStyle(Selge.Palette.accent)
                 Text("·")
+                    .foregroundStyle(.secondary)
                 Text("+\(estimatedCoin) 金币")
                     .fontWeight(.medium)
                     .foregroundStyle(Selge.Palette.coinGoldDeep)
             }
+            .font(.footnote)
+            .monospacedDigit()
+
+            Button {
+                submit()
+            } label: {
+                Text("确定")
+                    .font(.system(size: 17, weight: .semibold))
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .disabled(!canSubmit)
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 10)
+        .padding(.bottom, 8)
+        .background(Selge.Palette.bg)
+        .overlay(alignment: .top) {
+            Divider()
         }
     }
 
