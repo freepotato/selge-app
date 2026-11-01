@@ -211,8 +211,8 @@ final class GameStore {
         let deltaCoin = newCoin - record.coin
 
         if let hero = hero() {
-            hero.xp = max(0, hero.xp + deltaXP)
-            hero.coin = max(0, hero.coin + deltaCoin)
+            hero.xp += deltaXP
+            hero.coin += deltaCoin
             hero.updatedAt = Date.now
         }
 
@@ -238,11 +238,11 @@ final class GameStore {
         try? context.save()
     }
 
-    /// 删除历险记录：撤销该记录带来的经验/金币，删除关联流水，并重新校准成就
+    /// 删除历险记录：撤销该记录带来的经验/金币（允许扣到负数），删除关联流水，并重新校准成就
     func deleteRecord(_ record: AdventureRecord) {
         if let hero = hero() {
-            hero.xp = max(0, hero.xp - record.xp)
-            hero.coin = max(0, hero.coin - record.coin)
+            hero.xp -= record.xp
+            hero.coin -= record.coin
             hero.updatedAt = Date.now
         }
         for transaction in transactions(for: record.id) {

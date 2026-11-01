@@ -22,6 +22,7 @@ enum GameRules {
 
     /// 当前等级（1...maxLevel）
     static func level(forXP xp: Int) -> Int {
+        guard xp > 0 else { return 1 }
         var level = 1
         for i in (1...maxLevel).reversed() {
             if xp >= (xpTable[i] ?? 0) {
@@ -32,8 +33,9 @@ enum GameRules {
         return level
     }
 
-    /// 当前等级内的进度信息
+    /// 当前等级内的进度信息（xp 为负时按 0 计算，避免文案/进度条异常）
     static func progress(forXP xp: Int) -> (level: Int, current: Int, needed: Int, fraction: Double) {
+        let xp = max(0, xp)
         let level = Self.level(forXP: xp)
         if level >= maxLevel {
             return (maxLevel, 1, 1, 1)
