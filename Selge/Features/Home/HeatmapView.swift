@@ -38,21 +38,12 @@ struct HeatmapView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .contentShape(Rectangle())
-            // spatialTap 命中方块显示提示；simultaneousGesture 不拦截外层列表滚动。
-            // 按住后左右滑动会实时切换日期（DragGesture 与列表滚动方向冲突时由列表胜出）。
+            // 轻点方块显示当天历险次数；不提供滑动手势，
+            // 确保手指在热力图上上下滑动时页面照常滚动。
             .gesture(
                 SpatialTapGesture()
                     .onEnded { value in
                         if let hit = cell(at: value.location, grid: grid, metrics: metrics) {
-                            selected = hit
-                        }
-                    }
-            )
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 0, coordinateSpace: .local)
-                    .onChanged { value in
-                        // 手指滑出网格时保留上一个日期，避免提示频繁闪烁
-                        if let hit = cell(at: value.location, grid: grid, metrics: metrics), hit != selected {
                             selected = hit
                         }
                     }
