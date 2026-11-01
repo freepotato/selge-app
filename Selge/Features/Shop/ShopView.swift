@@ -32,10 +32,10 @@ struct ShopView: View {
         NavigationStack {
             List {
                 balanceSection
+                shopSection
                 if showLedger {
                     ledgerSection
                 }
-                shopSection
             }
             .listStyle(.insetGrouped)
             .tint(Selge.Palette.accent)
