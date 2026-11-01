@@ -38,12 +38,15 @@ struct HeatmapView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .contentShape(Rectangle())
-            // 高优先级手势：保证按住/滑动方块时不会被外层列表的点击手势清空悬浮框
+            // 先长按再拖动才命中方块：普通上下滑动会正常交给外层列表滚动，
+            // 不会因为手指落在热力图上而被拦截。
             .highPriorityGesture(
-                DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                LongPressGesture(minimumDuration: 0.22)
+                    .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
                     .onChanged { value in
+                        guard case .second(true, let drag?) = value else { return }
                         // 手指滑出网格时保留上一个日期，避免提示频繁闪烁
-                        if let hit = cell(at: value.location, grid: grid, metrics: metrics), hit != selected {
+                        if let hit = cell(at: drag.location, grid: grid, metrics: metrics), hit != selected {
                             selected = hit
                         }
                     }
