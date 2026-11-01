@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.2.0](https://github.com/freepotato/selge-app/compare/v0.1.0...v0.2.0) (2026-11-01)
+
+
+### Features
+
+* App 图标改为宋体 Selge 字样，移除历险页改用主页 + 按钮添加 ([63383ed](https://github.com/freepotato/selge-app/commit/63383edde2e57ba8495757d17e9a8d86a1f300c1))
+
+
+### Bug Fixes
+
+* 删除/编辑历险允许金币经验扣到负数，热力图点击方块恢复且滚动不冲突 ([de5f986](https://github.com/freepotato/selge-app/commit/de5f98682e9525da4530b2f3badf5d6caa0253e4))
+* 历险页类别下拉与确定按钮无法点击 ([984ed07](https://github.com/freepotato/selge-app/commit/984ed071d9c915369c8ffa7276d4e82423cac1a3))
+* 商店页账户明细移到商品列表下方 ([768561e](https://github.com/freepotato/selge-app/commit/768561e4f7146731108d06259b6b300cb0559804))
+* 热力图改为长按后滑动才选中日期，不再拦截主页上下滚动 ([982316a](https://github.com/freepotato/selge-app/commit/982316a7dfd2209eeadccd955dacd7439736c48d))
+* 移除热力图滑动手势，只保留轻点方块，确保页面可正常上下滚动 ([21e0161](https://github.com/freepotato/selge-app/commit/21e0161dc6ce173d252b3c667d86fa2eab038946))
+
 ## 0.1.0 (2026-10-31)
 
 
